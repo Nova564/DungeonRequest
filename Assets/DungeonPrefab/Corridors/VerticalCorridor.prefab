@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1262863655616594046, guid: 049bd8b158dcc93499a3f248bee8fbae, type: 3}
       propertyPath: m_Name
-      value: HorizontalCorridor Variant
+      value: VerticalCorridor
       objectReference: {fileID: 0}
     - target: {fileID: 1659509793856295327, guid: 049bd8b158dcc93499a3f248bee8fbae, type: 3}
       propertyPath: m_LocalPosition.x

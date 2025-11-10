@@ -1,2 +1,21 @@
 fileFormatVersion: 2
 guid: de7d25d99741c1244a376573827ed87f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - roomSingleLeft: {fileID: 4556377498111527128, guid: 865a86e9add3e7243a1ba7eed4f8b674, type: 3}
+  - roomSingleRight: {fileID: 4992021442596028478, guid: e73a8783e5d895f42a0b62b9b78c33af, type: 3}
+  - roomSingleTop: {fileID: 6635987780649663090, guid: 40385a05f4e584542a130bc387c3b17c, type: 3}
+  - roomSingleBottom: {fileID: 4096714745732446496, guid: 47d67c0f33af9f3499f939ac3ad7d1e5, type: 3}
+  - corridorHorizontal: {fileID: 1262863655616594046, guid: 049bd8b158dcc93499a3f248bee8fbae, type: 3}
+  - corridorVertical: {fileID: 4736646717098867247, guid: 62677b481c69a96499f611f804e7abab, type: 3}
+  - cornerBottomRight: {fileID: 2021723937733365721, guid: d60b079564ae18b49b912c4dc5ced3b3, type: 3}
+  - cornerBottomLeft: {fileID: 6417565646791092479, guid: 3461ef1d2e7e17a42b8f20ccad8ef4b0, type: 3}
+  - cornerTopRight: {fileID: 3093132756859926901, guid: 05d1ed4ab830df54bb902b2b20228037, type: 3}
+  - cornerTopLeft: {fileID: 4155557616702308063, guid: e44e0a31e7ed9594aa345c3d9b60106e, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
