@@ -3,39 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
 
-
 public class DungeonGenerator : MonoBehaviour
 {
-    [Header("Dungeon Settings (en pixels)")]
-    [SerializeField] private int dungeonWidth = 800;   
-    [SerializeField] private int dungeonHeight = 800;
-    [SerializeField] private int minRoomSize = 160;    
+    [Header("Dungeon Settings (en tiles Unity)")]
+    [SerializeField] private int dungeonWidth = 50;
+    [SerializeField] private int dungeonHeight = 50;
+    [SerializeField] private int minRoomSize = 10;
     [SerializeField] private int maxIterations = 4;
 
-    [Header("Constants Ne surtout pas modifier (test nassim)")]
-    [SerializeField] private int roomSize = 80;        
-    [SerializeField] private int corridorWidth = 4;    
-    [SerializeField] private int pixelsPerUnit = 16;   
+    [Header("Constants (NE PAS MODIFIER)")]
+    [SerializeField] private int roomSize = 5;
+    [SerializeField] private int corridorSize = 3;
 
-    [Header("Room Prefabs - une entrée")]
+    [Header("Room Prefabs - Single Entry (5x5)")]
     [SerializeField] private GameObject roomSingleLeft;
     [SerializeField] private GameObject roomSingleRight;
     [SerializeField] private GameObject roomSingleTop;
     [SerializeField] private GameObject roomSingleBottom;
 
-    [Header("Corridor Prefabs - Droit")]
-    [SerializeField] private GameObject corridorHorizontal;  
+    [Header("Corridor Prefabs - Straight (3x3)")]
+    [SerializeField] private GameObject corridorHorizontal;
     [SerializeField] private GameObject corridorVertical;
 
-    [Header("Corridor Prefabs - Corners")]
-    [SerializeField] private GameObject cornerBottomRight; 
-    [SerializeField] private GameObject cornerBottomLeft;  
-    [SerializeField] private GameObject cornerTopRight;    
-    [SerializeField] private GameObject cornerTopLeft;     
+    [Header("Corridor Prefabs - Corners (3x3)")]
+    [SerializeField] private GameObject cornerBottomRight;
+    [SerializeField] private GameObject cornerBottomLeft;
+    [SerializeField] private GameObject cornerTopRight;
+    [SerializeField] private GameObject cornerTopLeft;
 
     [Header("Debug")]
     [SerializeField] private bool showDebugGizmos = true;
-    [SerializeField] private KeyCode regenerateKey = KeyCode.Space;
 
     private BSPNode root;
     private List<RoomData> rooms = new List<RoomData>();
@@ -49,9 +46,9 @@ public class DungeonGenerator : MonoBehaviour
 
     void Update()
     {
-        if(Keyboard.current.spaceKey.IsPressed()) 
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            Debug.Log("space key pressed");
+            Debug.Log("Regeneration du donjon...");
             GenerateDungeon();
         }
     }
@@ -60,23 +57,22 @@ public class DungeonGenerator : MonoBehaviour
     {
         ClearDungeon();
 
-        Debug.Log("=== GÉNÉRATION DONJON (en pixels) ===");
+        Debug.Log("=== GENERATION DONJON ===");
 
         root = new BSPNode(new RectInt(0, 0, dungeonWidth, dungeonHeight));
         SplitNode(root, 0);
 
         CreateRooms(root);
-        Debug.Log($"✓ {rooms.Count} rooms créées");
+        Debug.Log($"Rooms: {rooms.Count}");
 
         CreateCorridors(root);
-        Debug.Log($"✓ {corridorGrid.Count} tuiles de corridor");
+        Debug.Log($"Corridors: {corridorGrid.Count}");
 
         CalculateActiveConnections();
-
         InstantiateRooms();
         InstantiateCorridors();
 
-        Debug.Log("=== GÉNÉRATION TERMINÉE ===");
+        Debug.Log("=== GENERATION TERMINEE ===");
     }
 
     private void SplitNode(BSPNode node, int iteration)
@@ -94,37 +90,19 @@ public class DungeonGenerator : MonoBehaviour
 
         if (splitH)
         {
-            int splitY = Random.Range(
-                node.bounds.y + minRoomSize,
-                node.bounds.y + node.bounds.height - minRoomSize
-            );
+            int splitY = Random.Range(node.bounds.y + minRoomSize, node.bounds.y + node.bounds.height - minRoomSize);
             splitY = Mathf.RoundToInt(splitY / (float)roomSize) * roomSize;
 
-            node.left = new BSPNode(new RectInt(
-                node.bounds.x, node.bounds.y,
-                node.bounds.width, splitY - node.bounds.y
-            ));
-            node.right = new BSPNode(new RectInt(
-                node.bounds.x, splitY,
-                node.bounds.width, node.bounds.y + node.bounds.height - splitY
-            ));
+            node.left = new BSPNode(new RectInt(node.bounds.x, node.bounds.y, node.bounds.width, splitY - node.bounds.y));
+            node.right = new BSPNode(new RectInt(node.bounds.x, splitY, node.bounds.width, node.bounds.y + node.bounds.height - splitY));
         }
         else
         {
-            int splitX = Random.Range(
-                node.bounds.x + minRoomSize,
-                node.bounds.x + node.bounds.width - minRoomSize
-            );
+            int splitX = Random.Range(node.bounds.x + minRoomSize, node.bounds.x + node.bounds.width - minRoomSize);
             splitX = Mathf.RoundToInt(splitX / (float)roomSize) * roomSize;
 
-            node.left = new BSPNode(new RectInt(
-                node.bounds.x, node.bounds.y,
-                splitX - node.bounds.x, node.bounds.height
-            ));
-            node.right = new BSPNode(new RectInt(
-                splitX, node.bounds.y,
-                node.bounds.x + node.bounds.width - splitX, node.bounds.height
-            ));
+            node.left = new BSPNode(new RectInt(node.bounds.x, node.bounds.y, splitX - node.bounds.x, node.bounds.height));
+            node.right = new BSPNode(new RectInt(splitX, node.bounds.y, node.bounds.x + node.bounds.width - splitX, node.bounds.height));
         }
 
         SplitNode(node.left, iteration + 1);
@@ -151,8 +129,6 @@ public class DungeonGenerator : MonoBehaviour
 
             node.room = new RectInt(roomX, roomY, roomSize, roomSize);
             rooms.Add(new RoomData(node.room));
-
-            Debug.Log($"  Room @ ({roomX}px, {roomY}px) = ({roomX / 16f:F1}, {roomY / 16f:F1}) Unity units");
         }
         else
         {
@@ -205,16 +181,14 @@ public class DungeonGenerator : MonoBehaviour
         ConnectionPoint point2 = room2.GetConnection(side2);
 
         Vector2Int start = new Vector2Int(
-            Mathf.RoundToInt(point1.position.x / 4f) * 4,
-            Mathf.RoundToInt(point1.position.y / 4f) * 4
+            Mathf.RoundToInt(point1.position.x / (float)corridorSize) * corridorSize,
+            Mathf.RoundToInt(point1.position.y / (float)corridorSize) * corridorSize
         );
 
         Vector2Int end = new Vector2Int(
-            Mathf.RoundToInt(point2.position.x / 4f) * 4,
-            Mathf.RoundToInt(point2.position.y / 4f) * 4
+            Mathf.RoundToInt(point2.position.x / (float)corridorSize) * corridorSize,
+            Mathf.RoundToInt(point2.position.y / (float)corridorSize) * corridorSize
         );
-
-        Debug.Log($"  Connexion: ({start.x}px,{start.y}px) -> ({end.x}px,{end.y}px)");
 
         CreateLShapedCorridor(start, end);
     }
@@ -286,8 +260,8 @@ public class DungeonGenerator : MonoBehaviour
         while (current != to)
         {
             Vector2Int gridPos = new Vector2Int(
-                Mathf.RoundToInt(current.x / 4f),
-                Mathf.RoundToInt(current.y / 4f)
+                current.x / corridorSize,
+                current.y / corridorSize
             );
 
             if (!corridorGrid.ContainsKey(gridPos))
@@ -298,13 +272,10 @@ public class DungeonGenerator : MonoBehaviour
             corridorGrid[gridPos].AddDirection(dir);
             corridorGrid[gridPos].AddDirection(-dir);
 
-            current += dir * 4;
+            current += dir * corridorSize;
         }
 
-        Vector2Int lastGrid = new Vector2Int(
-            Mathf.RoundToInt(to.x / 4f),
-            Mathf.RoundToInt(to.y / 4f)
-        );
+        Vector2Int lastGrid = new Vector2Int(to.x / corridorSize, to.y / corridorSize);
 
         if (!corridorGrid.ContainsKey(lastGrid))
         {
@@ -317,33 +288,39 @@ public class DungeonGenerator : MonoBehaviour
     {
         activeConnections.Clear();
 
+        RoomEntries[] order = new[] { RoomEntries.Left, RoomEntries.Right, RoomEntries.Top, RoomEntries.Bottom };
+
         foreach (RoomData room in rooms)
         {
-            RoomEntries usedEntries = RoomEntries.None;
+            RoomEntries chosen = RoomEntries.None;
 
-            foreach (var connection in room.connections)
+            foreach (var side in order)
             {
-                Vector2Int connPx = connection.Value.position;
+                if (!room.connections.ContainsKey(side)) continue;
 
-                for (int dx = -2; dx <= 2; dx++)
+                Vector2Int connPos = room.connections[side].position;
+                bool found = false;
+                for (int dx = -1; dx <= 1 && !found; dx++)
                 {
-                    for (int dy = -2; dy <= 2; dy++)
+                    for (int dy = -1; dy <= 1 && !found; dy++)
                     {
                         Vector2Int checkGrid = new Vector2Int(
-                            (connPx.x + dx * 4) / 4,
-                            (connPx.y + dy * 4) / 4
+                            (connPos.x + dx * corridorSize) / corridorSize,
+                            (connPos.y + dy * corridorSize) / corridorSize
                         );
 
                         if (corridorGrid.ContainsKey(checkGrid))
                         {
-                            usedEntries |= connection.Key;
-                            break;
+                            found = true;
+                            chosen = side;
                         }
                     }
                 }
+
+                if (found) break; // keep only one entry
             }
 
-            activeConnections[room.floorCenter] = usedEntries;
+            activeConnections[room.floorCenter] = chosen;
         }
     }
 
@@ -358,12 +335,7 @@ public class DungeonGenerator : MonoBehaviour
 
             if (prefab != null)
             {
-                Vector3 pos = new Vector3(
-                    room.bounds.x / (float)pixelsPerUnit,
-                    room.bounds.y / (float)pixelsPerUnit,
-                    0
-                );
-
+                Vector3 pos = new Vector3(room.bounds.x, room.bounds.y, 0);
                 GameObject instance = Instantiate(prefab, pos, Quaternion.identity, transform);
                 instance.name = $"Room_{entries}_{room.floorCenter.x}_{room.floorCenter.y}";
             }
@@ -372,12 +344,14 @@ public class DungeonGenerator : MonoBehaviour
 
     private GameObject GetRoomPrefab(RoomEntries entries)
     {
-        if ((entries & RoomEntries.Left) != 0) return roomSingleLeft;
-        if ((entries & RoomEntries.Right) != 0) return roomSingleRight;
-        if ((entries & RoomEntries.Top) != 0) return roomSingleTop;
-        if ((entries & RoomEntries.Bottom) != 0) return roomSingleBottom;
+        // Only spawn when exactly one entry is chosen
+        if (entries == RoomEntries.Left) return roomSingleLeft;
+        if (entries == RoomEntries.Right) return roomSingleRight;
+        if (entries == RoomEntries.Top) return roomSingleTop;
+        if (entries == RoomEntries.Bottom) return roomSingleBottom;
 
-        return roomSingleLeft;
+        // No active entry -> do not place a single-entry prefab
+        return null;
     }
 
     private void InstantiateCorridors()
@@ -385,14 +359,7 @@ public class DungeonGenerator : MonoBehaviour
         foreach (var kvp in corridorGrid)
         {
             CorridorTile tile = kvp.Value;
-
-            int px = tile.position.x * 4;
-            int py = tile.position.y * 4;
-            Vector3 pos = new Vector3(
-                px / (float)pixelsPerUnit,
-                py / (float)pixelsPerUnit,
-                0
-            );
+            Vector3 pos = new Vector3(tile.position.x * corridorSize, tile.position.y * corridorSize, 0);
 
             GameObject prefab = GetCorridorPrefab(tile.type);
 
@@ -438,44 +405,35 @@ public class DungeonGenerator : MonoBehaviour
         Gizmos.color = Color.green;
         foreach (RoomData room in rooms)
         {
-            float x = room.bounds.x / (float)pixelsPerUnit;
-            float y = room.bounds.y / (float)pixelsPerUnit;
-            float w = room.bounds.width / (float)pixelsPerUnit;
-            float h = room.bounds.height / (float)pixelsPerUnit;
-
             Gizmos.DrawWireCube(
-                new Vector3(x + w / 2f, y + h / 2f, 0),
-                new Vector3(w, h, 0.1f)
+                new Vector3(room.bounds.x + room.bounds.width / 2f, room.bounds.y + room.bounds.height / 2f, 0),
+                new Vector3(room.bounds.width, room.bounds.height, 0.1f)
             );
 
-            Gizmos.color = Color.yellow;
-            foreach (var conn in room.connections.Values)
+            RoomEntries used = activeConnections.ContainsKey(room.floorCenter) ? activeConnections[room.floorCenter] : RoomEntries.None;
+
+            if (used != RoomEntries.None && room.connections.ContainsKey(used))
             {
-                Vector3 connPos = new Vector3(
-                    conn.position.x / (float)pixelsPerUnit,
-                    conn.position.y / (float)pixelsPerUnit,
-                    0
-                );
-                Gizmos.DrawSphere(connPos, 0.15f);
+                Gizmos.color = Color.yellow;
+                Vector2Int p = room.connections[used].position;
+                Vector3 connPos = new Vector3(p.x, p.y, 0);
+                Gizmos.DrawSphere(connPos, 0.3f);
+                Gizmos.color = Color.green;
             }
-            Gizmos.color = Color.green;
         }
+
         if (corridorGrid != null)
         {
             Gizmos.color = Color.blue;
             foreach (var kvp in corridorGrid)
             {
-                float x = (kvp.Value.position.x * 4) / (float)pixelsPerUnit;
-                float y = (kvp.Value.position.y * 4) / (float)pixelsPerUnit;
-                float size = 4f / pixelsPerUnit;
-
-                Gizmos.DrawWireCube(
-                    new Vector3(x + size / 2f, y + size / 2f, 0),
-                    new Vector3(size, size, 0.1f)
+                Vector3 pos = new Vector3(
+                    kvp.Value.position.x * corridorSize + corridorSize / 2f,
+                    kvp.Value.position.y * corridorSize + corridorSize / 2f,
+                    0
                 );
+                Gizmos.DrawWireCube(pos, new Vector3(corridorSize, corridorSize, 0.1f));
             }
         }
     }
 }
-
-

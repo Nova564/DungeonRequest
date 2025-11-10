@@ -17,19 +17,22 @@ public class RoomData
 
     private void CalculateConnectionPoints()
     {
-        int totalSize = 80;
-        int wallThickness = 8;
-        int centerX = bounds.x + totalSize / 2;
-        int centerY = bounds.y + totalSize / 2;
+        connections.Clear();
+
+        int centerX = bounds.x + bounds.width / 2;
+        int centerY = bounds.y + bounds.height / 2;
 
         connections[RoomEntries.Left] = new ConnectionPoint(
-            new Vector2Int(bounds.x + wallThickness, centerY), RoomEntries.Left);
+            new Vector2Int(bounds.x, centerY), RoomEntries.Left);
+
         connections[RoomEntries.Right] = new ConnectionPoint(
-            new Vector2Int(bounds.x + totalSize - wallThickness, centerY), RoomEntries.Right);
+            new Vector2Int(bounds.x + bounds.width, centerY), RoomEntries.Right);
+
         connections[RoomEntries.Top] = new ConnectionPoint(
-            new Vector2Int(centerX, bounds.y + totalSize - wallThickness), RoomEntries.Top);
+            new Vector2Int(centerX, bounds.y + bounds.height), RoomEntries.Top);
+
         connections[RoomEntries.Bottom] = new ConnectionPoint(
-            new Vector2Int(centerX, bounds.y + wallThickness), RoomEntries.Bottom);
+            new Vector2Int(centerX, bounds.y), RoomEntries.Bottom);
     }
 
     public ConnectionPoint GetConnection(RoomEntries side)
