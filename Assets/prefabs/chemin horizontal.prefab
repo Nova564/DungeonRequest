@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
       propertyPath: m_Name
-      value: chemin horizontal Variant
+      value: chemin horizontal
       objectReference: {fileID: 0}
     - target: {fileID: 2871703621892594836, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
       propertyPath: m_LocalPosition.x

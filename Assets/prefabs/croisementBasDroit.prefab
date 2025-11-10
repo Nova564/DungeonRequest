@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3596340343240273824, guid: 79fed02a43bc1804b887aa779b75fd83, type: 3}
       propertyPath: m_Name
-      value: croisementBasDroit Variant
+      value: croisementBasDroit
       objectReference: {fileID: 0}
     - target: {fileID: 8355087401963266004, guid: 79fed02a43bc1804b887aa779b75fd83, type: 3}
       propertyPath: m_LocalPosition.x
