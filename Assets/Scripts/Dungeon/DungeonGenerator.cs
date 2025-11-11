@@ -327,7 +327,16 @@ public class DungeonGenerator : MonoBehaviour
             {
                 GameObject prefab = GetRoomPrefab(room.activeEntry);
                 if (prefab == null) continue;
-                GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform);
+
+                Quaternion rotation = Quaternion.identity;
+                switch (room.activeEntry)
+                {
+                    case RoomSide.Right: rotation = Quaternion.identity; break;
+                    case RoomSide.Left: rotation = Quaternion.Euler(0, 0, 180); break;
+                    case RoomSide.Top: rotation = Quaternion.Euler(0, 0, 90); break;
+                    case RoomSide.Bottom: rotation = Quaternion.Euler(0, 0, -90); break;
+                }
+                GameObject instance = Instantiate(prefab, position, rotation, transform);
                 instantiatedObjects.Add(instance);
 
                 if (showPivotDebug)

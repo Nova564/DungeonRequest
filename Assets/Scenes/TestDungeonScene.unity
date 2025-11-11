@@ -310,13 +310,14 @@ MonoBehaviour:
   roomPrefabRight: {fileID: 6349242348494687379, guid: b987e4ab594fa36498507c0107941c4a, type: 3}
   roomPrefabTop: {fileID: 8425949479181045436, guid: 989f4a4887e06e24b97cfb999fc42ecd, type: 3}
   roomPrefabBottom: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
-  corridorHorizontal: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  corridorHorizontal: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
   corridorVertical: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
   corridorCornerBottomRight: {fileID: 3596340343240273824, guid: 79fed02a43bc1804b887aa779b75fd83, type: 3}
   corridorCornerBottomLeft: {fileID: 3993794382196609215, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
   corridorCornerTopRight: {fileID: 270381733816430058, guid: e046dc9825c6c824d84dead985672443, type: 3}
   corridorCornerTopLeft: {fileID: 2615081394997350371, guid: be37652add8a0bf40be0ccce9a2a2c63, type: 3}
-  useDebugCubes: 1
+  useDebugCubes: 0
+  showPivotDebug: 1
   roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
   corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
   allPrefabsToDebugCheck: []
