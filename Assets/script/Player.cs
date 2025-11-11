@@ -3,12 +3,23 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] float speed = 5f;
-    
+    [SerializeField] float speed;
+    [SerializeField] float idleScaleSpeed;
+    [SerializeField] float idleScaleAmount;
+    private Vector3 originalScale;
+
+    private void Start()
+    {
+        originalScale = transform.localScale;
+    }
 
     void Update()
     {
         MovePlayer();
+        if (!Input.anyKey)
+        {
+            IdleEffect();
+        }
     }
 
     void MovePlayer()
@@ -29,5 +40,11 @@ public class PlayerMovement : MonoBehaviour
         Vector2 move = new Vector2(moveX, moveY).normalized;
 
         transform.position += (Vector3)(move * speed * Time.deltaTime);
+    }
+
+    void IdleEffect()
+    {
+        float scaleOffset = Mathf.Sin(Time.time * idleScaleSpeed) * idleScaleAmount;
+        transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset,0);
     }
 }
