@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1003446153207848937, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.4946475
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1003446153207848937, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.52299476
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1003446153207848937, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
       propertyPath: m_LocalPosition.z
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
       propertyPath: m_Name
-      value: salle entrer droit Variant
+      value: salle entrer droit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

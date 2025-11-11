@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 819584936161403305, guid: da507398f5597cd4185d72acb4388f94, type: 3}
       propertyPath: m_Name
-      value: salle entrer haut Variant
+      value: salle entrer haut
       objectReference: {fileID: 0}
     - target: {fileID: 4667537270811296024, guid: da507398f5597cd4185d72acb4388f94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.4946475
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4667537270811296024, guid: da507398f5597cd4185d72acb4388f94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.52299476
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4667537270811296024, guid: da507398f5597cd4185d72acb4388f94, type: 3}
       propertyPath: m_LocalPosition.z

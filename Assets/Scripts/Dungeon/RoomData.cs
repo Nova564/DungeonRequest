@@ -1,42 +1,26 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+
+public enum RoomSide
+{
+    None = 0,
+    Left = 1,
+    Right = 2,
+    Top = 4,
+    Bottom = 8
+}
 
 public class RoomData
 {
     public RectInt bounds;
-    public Vector2Int floorCenter;
-    public Dictionary<RoomEntries, ConnectionPoint> connections;
+    public Vector2 floorCenter;
+    public Dictionary<RoomSide, Vector2> connectionPoints = new Dictionary<RoomSide, Vector2>();
+    public List<RoomSide> usedSides = new List<RoomSide>();
+    public RoomSide activeEntry = RoomSide.None;
+}
 
-    public RoomData(RectInt bounds)
-    {
-        this.bounds = bounds;
-        this.floorCenter = new Vector2Int(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-        this.connections = new Dictionary<RoomEntries, ConnectionPoint>();
-        CalculateConnectionPoints();
-    }
-
-    private void CalculateConnectionPoints()
-    {
-        connections.Clear();
-
-        int centerX = bounds.x + bounds.width / 2;
-        int centerY = bounds.y + bounds.height / 2;
-
-        connections[RoomEntries.Left] = new ConnectionPoint(
-            new Vector2Int(bounds.x, centerY), RoomEntries.Left);
-
-        connections[RoomEntries.Right] = new ConnectionPoint(
-            new Vector2Int(bounds.x + bounds.width, centerY), RoomEntries.Right);
-
-        connections[RoomEntries.Top] = new ConnectionPoint(
-            new Vector2Int(centerX, bounds.y + bounds.height), RoomEntries.Top);
-
-        connections[RoomEntries.Bottom] = new ConnectionPoint(
-            new Vector2Int(centerX, bounds.y), RoomEntries.Bottom);
-    }
-
-    public ConnectionPoint GetConnection(RoomEntries side)
-    {
-        return connections.ContainsKey(side) ? connections[side] : default;
-    }
+public struct ConnectionPoint
+{
+    public Vector2 position;
+    public RoomSide side;
 }

@@ -5,39 +5,58 @@ using UnityEngine.InputSystem;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    [Header("Dungeon Settings (en tiles Unity)")]
-    [SerializeField] private int dungeonWidth = 50;
-    [SerializeField] private int dungeonHeight = 50;
-    [SerializeField] private int minRoomSize = 10;
+    [Header("Dungeon Settings")]
+    [SerializeField] private int dungeonWidth = 100;
+    [SerializeField] private int dungeonHeight = 100;
+    [SerializeField] private int minRoomSize = 15;
     [SerializeField] private int maxIterations = 4;
 
-    [Header("Constants (NE PAS MODIFIER)")]
-    [SerializeField] private int roomSize = 5;
-    [SerializeField] private int corridorSize = 3;
+    [Header("Grid Constants")]
+    [SerializeField] private int ROOM_SIZE = 5;
+    [SerializeField] private int CORRIDOR_SIZE = 1;
 
-    [Header("Room Prefabs - Single Entry (5x5)")]
-    [SerializeField] private GameObject roomSingleLeft;
-    [SerializeField] private GameObject roomSingleRight;
-    [SerializeField] private GameObject roomSingleTop;
-    [SerializeField] private GameObject roomSingleBottom;
+    [Header("Room Prefabs (Single Entry)")]
+    [SerializeField] private GameObject roomPrefabLeft;
+    [SerializeField] private GameObject roomPrefabRight;
+    [SerializeField] private GameObject roomPrefabTop;
+    [SerializeField] private GameObject roomPrefabBottom;
 
-    [Header("Corridor Prefabs - Straight (3x3)")]
+    [Header("Corridor Prefabs")]
     [SerializeField] private GameObject corridorHorizontal;
     [SerializeField] private GameObject corridorVertical;
+    [SerializeField] private GameObject corridorCornerBottomRight;
+    [SerializeField] private GameObject corridorCornerBottomLeft;
+    [SerializeField] private GameObject corridorCornerTopRight;
+    [SerializeField] private GameObject corridorCornerTopLeft;
 
-    [Header("Corridor Prefabs - Corners (3x3)")]
-    [SerializeField] private GameObject cornerBottomRight;
-    [SerializeField] private GameObject cornerBottomLeft;
-    [SerializeField] private GameObject cornerTopRight;
-    [SerializeField] private GameObject cornerTopLeft;
+    [Header("Debug Placement")]
+    [SerializeField] private bool useDebugCubes = true;
+    [SerializeField] private bool showPivotDebug = false; 
+    [SerializeField] private Color roomDebugColor = new Color(0.2f, 0.9f, 0.2f, 0.6f);
+    [SerializeField] private Color corridorDebugColor = new Color(0.2f, 0.6f, 1f, 0.6f);
+    [SerializeField] private List<GameObject> allPrefabsToDebugCheck = new List<GameObject>();
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugGizmos = true;
-
-    private BSPNode root;
+    private BSPNode rootNode;
     private List<RoomData> rooms = new List<RoomData>();
     private Dictionary<Vector2Int, CorridorTile> corridorGrid = new Dictionary<Vector2Int, CorridorTile>();
-    private Dictionary<Vector2Int, RoomEntries> activeConnections = new Dictionary<Vector2Int, RoomEntries>();
+    private List<GameObject> instantiatedObjects = new List<GameObject>();
+    private List<ConnectionPoint> activeConnections = new List<ConnectionPoint>();
+
+    void Awake()
+    {
+        allPrefabsToDebugCheck.Clear();
+        if (roomPrefabLeft != null) allPrefabsToDebugCheck.Add(roomPrefabLeft);
+        if (roomPrefabRight != null) allPrefabsToDebugCheck.Add(roomPrefabRight);
+        if (roomPrefabTop != null) allPrefabsToDebugCheck.Add(roomPrefabTop);
+        if (roomPrefabBottom != null) allPrefabsToDebugCheck.Add(roomPrefabBottom);
+
+        if (corridorHorizontal != null) allPrefabsToDebugCheck.Add(corridorHorizontal);
+        if (corridorVertical != null) allPrefabsToDebugCheck.Add(corridorVertical);
+        if (corridorCornerBottomRight != null) allPrefabsToDebugCheck.Add(corridorCornerBottomRight);
+        if (corridorCornerBottomLeft != null) allPrefabsToDebugCheck.Add(corridorCornerBottomLeft);
+        if (corridorCornerTopRight != null) allPrefabsToDebugCheck.Add(corridorCornerTopRight);
+        if (corridorCornerTopLeft != null) allPrefabsToDebugCheck.Add(corridorCornerTopLeft);
+    }
 
     void Start()
     {
@@ -48,61 +67,67 @@ public class DungeonGenerator : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            Debug.Log("Regeneration du donjon...");
-            GenerateDungeon();
+            RegenerateDungeon();
         }
     }
 
-    public void GenerateDungeon()
+    public void RegenerateDungeon()
     {
         ClearDungeon();
+        GenerateDungeon();
+    }
 
-        Debug.Log("=== GENERATION DONJON ===");
+    private void ClearDungeon()
+    {
+        foreach (var obj in instantiatedObjects)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        instantiatedObjects.Clear();
+        rooms.Clear();
+        corridorGrid.Clear();
+        activeConnections.Clear();
+    }
 
-        root = new BSPNode(new RectInt(0, 0, dungeonWidth, dungeonHeight));
-        SplitNode(root, 0);
-
-        CreateRooms(root);
-        Debug.Log($"Rooms: {rooms.Count}");
-
-        CreateCorridors(root);
-        Debug.Log($"Corridors: {corridorGrid.Count}");
-
-        CalculateActiveConnections();
+    private void GenerateDungeon()
+    {
+        RectInt dungeonBounds = new RectInt(0, 0, dungeonWidth, dungeonHeight);
+        rootNode = new BSPNode(dungeonBounds);
+        SplitNode(rootNode, 0);
+        CreateRooms(rootNode);
+        ConnectRooms(rootNode);
+        DetermineRoomEntries();
         InstantiateRooms();
         InstantiateCorridors();
-
-        Debug.Log("=== GENERATION TERMINEE ===");
+        Debug.Log($"Generated {rooms.Count} rooms and {corridorGrid.Count} corridor tiles");
     }
 
     private void SplitNode(BSPNode node, int iteration)
     {
-        if (iteration >= maxIterations)
-            return;
+        if (iteration >= maxIterations) return;
 
-        bool canSplitH = node.bounds.height >= minRoomSize * 2;
-        bool canSplitV = node.bounds.width >= minRoomSize * 2;
+        RectInt bounds = node.bounds;
 
-        if (!canSplitH && !canSplitV)
-            return;
+        bool canSplitHorizontally = bounds.height >= minRoomSize * 2;
+        bool canSplitVertically = bounds.width >= minRoomSize * 2;
 
-        bool splitH = (canSplitH && canSplitV) ? Random.value > 0.5f : canSplitH;
+        if (!canSplitHorizontally && !canSplitVertically) return;
 
-        if (splitH)
+        bool splitHorizontally = (canSplitHorizontally && canSplitVertically)
+            ? Random.value > 0.5f
+            : canSplitHorizontally;
+
+        if (splitHorizontally)
         {
-            int splitY = Random.Range(node.bounds.y + minRoomSize, node.bounds.y + node.bounds.height - minRoomSize);
-            splitY = Mathf.RoundToInt(splitY / (float)roomSize) * roomSize;
-
-            node.left = new BSPNode(new RectInt(node.bounds.x, node.bounds.y, node.bounds.width, splitY - node.bounds.y));
-            node.right = new BSPNode(new RectInt(node.bounds.x, splitY, node.bounds.width, node.bounds.y + node.bounds.height - splitY));
+            int splitY = Random.Range(bounds.yMin + minRoomSize, bounds.yMax - minRoomSize);
+            node.left = new BSPNode(new RectInt(bounds.xMin, bounds.yMin, bounds.width, splitY - bounds.yMin));
+            node.right = new BSPNode(new RectInt(bounds.xMin, splitY, bounds.width, bounds.yMax - splitY));
         }
         else
         {
-            int splitX = Random.Range(node.bounds.x + minRoomSize, node.bounds.x + node.bounds.width - minRoomSize);
-            splitX = Mathf.RoundToInt(splitX / (float)roomSize) * roomSize;
-
-            node.left = new BSPNode(new RectInt(node.bounds.x, node.bounds.y, splitX - node.bounds.x, node.bounds.height));
-            node.right = new BSPNode(new RectInt(splitX, node.bounds.y, node.bounds.x + node.bounds.width - splitX, node.bounds.height));
+            int splitX = Random.Range(bounds.xMin + minRoomSize, bounds.xMax - minRoomSize);
+            node.left = new BSPNode(new RectInt(bounds.xMin, bounds.yMin, splitX - bounds.xMin, bounds.height));
+            node.right = new BSPNode(new RectInt(splitX, bounds.yMin, bounds.xMax - splitX, bounds.height));
         }
 
         SplitNode(node.left, iteration + 1);
@@ -111,247 +136,204 @@ public class DungeonGenerator : MonoBehaviour
 
     private void CreateRooms(BSPNode node)
     {
-        if (node == null) return;
-
         if (node.IsLeaf())
         {
-            int maxRoomsX = node.bounds.width / roomSize;
-            int maxRoomsY = node.bounds.height / roomSize;
+            RectInt bounds = node.bounds;
+            int centerX = bounds.xMin + bounds.width / 2;
+            int centerY = bounds.yMin + bounds.height / 2;
 
-            if (maxRoomsX < 1 || maxRoomsY < 1)
-                return;
+            int roomX = SnapToGrid(centerX - ROOM_SIZE / 2, ROOM_SIZE);
+            int roomY = SnapToGrid(centerY - ROOM_SIZE / 2, ROOM_SIZE);
 
-            int roomX = node.bounds.x + (node.bounds.width - roomSize) / 2;
-            int roomY = node.bounds.y + (node.bounds.height - roomSize) / 2;
+            RectInt roomBounds = new RectInt(roomX, roomY, ROOM_SIZE, ROOM_SIZE);
+            Vector2 roomCenter = new Vector2(roomX + ROOM_SIZE / 2f, roomY + ROOM_SIZE / 2f);
 
-            roomX = Mathf.RoundToInt(roomX / (float)roomSize) * roomSize;
-            roomY = Mathf.RoundToInt(roomY / (float)roomSize) * roomSize;
+            RoomData room = new RoomData
+            {
+                bounds = roomBounds,
+                floorCenter = roomCenter
+            };
 
-            node.room = new RectInt(roomX, roomY, roomSize, roomSize);
-            rooms.Add(new RoomData(node.room));
+            room.connectionPoints[RoomSide.Left] = new Vector2(roomX, roomCenter.y);
+            room.connectionPoints[RoomSide.Right] = new Vector2(roomX + ROOM_SIZE, roomCenter.y);
+            room.connectionPoints[RoomSide.Top] = new Vector2(roomCenter.x, roomY + ROOM_SIZE);
+            room.connectionPoints[RoomSide.Bottom] = new Vector2(roomCenter.x, roomY);
+
+            node.room = roomBounds;
+            rooms.Add(room);
         }
         else
         {
-            CreateRooms(node.left);
-            CreateRooms(node.right);
+            if (node.left != null) CreateRooms(node.left);
+            if (node.right != null) CreateRooms(node.right);
         }
     }
 
-    private void CreateCorridors(BSPNode node)
+    private void ConnectRooms(BSPNode node)
     {
-        if (node == null || node.IsLeaf())
-            return;
+        if (node.IsLeaf()) return;
+        if (node.left != null) ConnectRooms(node.left);
+        if (node.right != null) ConnectRooms(node.right);
 
-        CreateCorridors(node.left);
-        CreateCorridors(node.right);
-
-        RoomData room1 = GetRandomRoomInNode(node.left);
-        RoomData room2 = GetRandomRoomInNode(node.right);
-
-        if (room1 != null && room2 != null)
+        if (node.left != null && node.right != null)
         {
-            ConnectRooms(room1, room2);
+            RoomData leftRoom = GetRandomRoomFromNode(node.left);
+            RoomData rightRoom = GetRandomRoomFromNode(node.right);
+            if (leftRoom != null && rightRoom != null)
+            {
+                CreateCorridor(leftRoom, rightRoom);
+            }
         }
     }
 
-    private RoomData GetRandomRoomInNode(BSPNode node)
+    private RoomData GetRandomRoomFromNode(BSPNode node)
     {
-        if (node == null) return null;
+        if (node.IsLeaf() && node.room.HasValue)
+            return rooms.FirstOrDefault(r => r.bounds == node.room.Value);
 
-        if (node.IsLeaf())
+        List<RoomData> nodeRooms = new List<RoomData>();
+        CollectRooms(node, nodeRooms);
+        return nodeRooms.Count > 0 ? nodeRooms[Random.Range(0, nodeRooms.Count)] : null;
+    }
+
+    private void CollectRooms(BSPNode node, List<RoomData> collection)
+    {
+        if (node.IsLeaf() && node.room.HasValue)
         {
-            return rooms.FirstOrDefault(r => r.bounds == node.room);
+            RoomData room = rooms.FirstOrDefault(r => r.bounds == node.room.Value);
+            if (room != null) collection.Add(room);
         }
-
-        var leftRoom = GetRandomRoomInNode(node.left);
-        var rightRoom = GetRandomRoomInNode(node.right);
-
-        if (leftRoom != null && rightRoom != null)
-            return Random.value > 0.5f ? leftRoom : rightRoom;
-
-        return leftRoom ?? rightRoom;
+        else
+        {
+            if (node.left != null) CollectRooms(node.left, collection);
+            if (node.right != null) CollectRooms(node.right, collection);
+        }
     }
 
-    private void ConnectRooms(RoomData room1, RoomData room2)
+    private void CreateCorridor(RoomData room1, RoomData room2)
     {
-        RoomEntries side1, side2;
-        DetermineBestConnectionSides(room1, room2, out side1, out side2);
+        Vector2 start = room1.floorCenter;
+        Vector2 end = room2.floorCenter;
 
-        ConnectionPoint point1 = room1.GetConnection(side1);
-        ConnectionPoint point2 = room2.GetConnection(side2);
+        float dx = end.x - start.x;
+        float dy = end.y - start.y;
 
-        Vector2Int start = new Vector2Int(
-            Mathf.RoundToInt(point1.position.x / (float)corridorSize) * corridorSize,
-            Mathf.RoundToInt(point1.position.y / (float)corridorSize) * corridorSize
-        );
-
-        Vector2Int end = new Vector2Int(
-            Mathf.RoundToInt(point2.position.x / (float)corridorSize) * corridorSize,
-            Mathf.RoundToInt(point2.position.y / (float)corridorSize) * corridorSize
-        );
-
-        CreateLShapedCorridor(start, end);
-    }
-
-    private void DetermineBestConnectionSides(RoomData room1, RoomData room2, out RoomEntries side1, out RoomEntries side2)
-    {
-        Vector2Int c1 = room1.floorCenter;
-        Vector2Int c2 = room2.floorCenter;
-
-        int dx = c2.x - c1.x;
-        int dy = c2.y - c1.y;
-
+        RoomSide side1, side2;
         if (Mathf.Abs(dx) > Mathf.Abs(dy))
         {
-            if (dx > 0)
-            {
-                side1 = RoomEntries.Right;
-                side2 = RoomEntries.Left;
-            }
-            else
-            {
-                side1 = RoomEntries.Left;
-                side2 = RoomEntries.Right;
-            }
+            side1 = dx > 0 ? RoomSide.Right : RoomSide.Left;
+            side2 = dx > 0 ? RoomSide.Left : RoomSide.Right;
         }
         else
         {
-            if (dy > 0)
+            side1 = dy > 0 ? RoomSide.Top : RoomSide.Bottom;
+            side2 = dy > 0 ? RoomSide.Bottom : RoomSide.Top;
+        }
+
+        Vector2 startPoint = room1.connectionPoints[side1];
+        Vector2 endPoint = room2.connectionPoints[side2];
+
+        startPoint = SnapToCorridor(startPoint);
+        endPoint = SnapToCorridor(endPoint);
+
+        room1.usedSides.Add(side1);
+        room2.usedSides.Add(side2);
+
+        activeConnections.Add(new ConnectionPoint { position = startPoint, side = side1 });
+        activeConnections.Add(new ConnectionPoint { position = endPoint, side = side2 });
+
+        Vector2 corner = Random.value > 0.5f
+            ? new Vector2(endPoint.x, startPoint.y)
+            : new Vector2(startPoint.x, endPoint.y);
+
+        DrawCorridorLine(startPoint, corner);
+        DrawCorridorLine(corner, endPoint);
+    }
+
+    private void DrawCorridorLine(Vector2 from, Vector2 to)
+    {
+        Vector2 current = from;
+        Vector2 direction = (to - from).normalized;
+
+        while (Vector2.Distance(current, to) > 0.1f)
+        {
+            Vector2Int cellCoord = WorldToCorridorCell(current);
+
+            if (!corridorGrid.ContainsKey(cellCoord))
             {
-                side1 = RoomEntries.Top;
-                side2 = RoomEntries.Bottom;
+                corridorGrid[cellCoord] = new CorridorTile { cellPosition = cellCoord };
             }
-            else
+
+            if (Mathf.Abs(direction.x) > 0.5f)
             {
-                side1 = RoomEntries.Bottom;
-                side2 = RoomEntries.Top;
+                corridorGrid[cellCoord].AddDirection(CorridorDirection.Horizontal);
             }
+            if (Mathf.Abs(direction.y) > 0.5f)
+            {
+                corridorGrid[cellCoord].AddDirection(CorridorDirection.Vertical);
+            }
+
+            current += direction * CORRIDOR_SIZE;
+            if (Vector2.Distance(from, current) > 1000f) break;
         }
     }
 
-    private void CreateLShapedCorridor(Vector2Int start, Vector2Int end)
+    private void DetermineRoomEntries()
     {
-        if (Random.value > 0.5f)
+        foreach (var room in rooms)
         {
-            Vector2Int corner = new Vector2Int(end.x, start.y);
-            AddCorridorPath(start, corner);
-            AddCorridorPath(corner, end);
-        }
-        else
-        {
-            Vector2Int corner = new Vector2Int(start.x, end.y);
-            AddCorridorPath(start, corner);
-            AddCorridorPath(corner, end);
-        }
-    }
-
-    private void AddCorridorPath(Vector2Int from, Vector2Int to)
-    {
-        if (from == to)
-            return;
-
-        Vector2Int dir = new Vector2Int(
-            Mathf.Clamp(to.x - from.x, -1, 1),
-            Mathf.Clamp(to.y - from.y, -1, 1)
-        );
-
-        Vector2Int current = from;
-
-        while (current != to)
-        {
-            Vector2Int gridPos = new Vector2Int(
-                current.x / corridorSize,
-                current.y / corridorSize
-            );
-
-            if (!corridorGrid.ContainsKey(gridPos))
+            room.activeEntry = RoomSide.None;
+            RoomSide[] priorities = { RoomSide.Left, RoomSide.Right, RoomSide.Top, RoomSide.Bottom };
+            foreach (var side in priorities)
             {
-                corridorGrid[gridPos] = new CorridorTile(gridPos);
-            }
-
-            corridorGrid[gridPos].AddDirection(dir);
-            corridorGrid[gridPos].AddDirection(-dir);
-
-            current += dir * corridorSize;
-        }
-
-        Vector2Int lastGrid = new Vector2Int(to.x / corridorSize, to.y / corridorSize);
-
-        if (!corridorGrid.ContainsKey(lastGrid))
-        {
-            corridorGrid[lastGrid] = new CorridorTile(lastGrid);
-        }
-        corridorGrid[lastGrid].AddDirection(-dir);
-    }
-
-    private void CalculateActiveConnections()
-    {
-        activeConnections.Clear();
-
-        RoomEntries[] order = new[] { RoomEntries.Left, RoomEntries.Right, RoomEntries.Top, RoomEntries.Bottom };
-
-        foreach (RoomData room in rooms)
-        {
-            RoomEntries chosen = RoomEntries.None;
-
-            foreach (var side in order)
-            {
-                if (!room.connections.ContainsKey(side)) continue;
-
-                Vector2Int connPos = room.connections[side].position;
-                bool found = false;
-                for (int dx = -1; dx <= 1 && !found; dx++)
+                if (room.usedSides.Contains(side))
                 {
-                    for (int dy = -1; dy <= 1 && !found; dy++)
+                    Vector2 connectionPoint = room.connectionPoints[side];
+                    Vector2Int cellCoord = WorldToCorridorCell(connectionPoint);
+                    if (corridorGrid.ContainsKey(cellCoord) || HasCorridorNearby(connectionPoint))
                     {
-                        Vector2Int checkGrid = new Vector2Int(
-                            (connPos.x + dx * corridorSize) / corridorSize,
-                            (connPos.y + dy * corridorSize) / corridorSize
-                        );
-
-                        if (corridorGrid.ContainsKey(checkGrid))
-                        {
-                            found = true;
-                            chosen = side;
-                        }
+                        room.activeEntry = side;
+                        break;
                     }
                 }
-
-                if (found) break; // keep only one entry
             }
-
-            activeConnections[room.floorCenter] = chosen;
+            if (room.activeEntry == RoomSide.None && room.usedSides.Count > 0)
+                room.activeEntry = room.usedSides[0];
         }
+    }
+
+    private bool HasCorridorNearby(Vector2 point)
+    {
+        Vector2Int center = WorldToCorridorCell(point);
+        for (int dx = -1; dx <= 1; dx++)
+            for (int dy = -1; dy <= 1; dy++)
+                if (corridorGrid.ContainsKey(center + new Vector2Int(dx, dy)))
+                    return true;
+        return false;
     }
 
     private void InstantiateRooms()
     {
-        foreach (RoomData room in rooms)
+        foreach (var room in rooms)
         {
-            RoomEntries entries = activeConnections.ContainsKey(room.floorCenter) ?
-                activeConnections[room.floorCenter] : RoomEntries.None;
+            Vector3 position = new Vector3(room.floorCenter.x, room.floorCenter.y, 0);
 
-            GameObject prefab = GetRoomPrefab(entries);
-
-            if (prefab != null)
+            if (useDebugCubes)
             {
-                Vector3 pos = new Vector3(room.bounds.x, room.bounds.y, 0);
-                GameObject instance = Instantiate(prefab, pos, Quaternion.identity, transform);
-                instance.name = $"Room_{entries}_{room.floorCenter.x}_{room.floorCenter.y}";
+                var cube = CreateDebugCube(position, new Vector3(ROOM_SIZE, ROOM_SIZE, 1f), roomDebugColor, $"RoomCube_{room.bounds.xMin}_{room.bounds.yMin}");
+                instantiatedObjects.Add(cube);
+            }
+            else
+            {
+                GameObject prefab = GetRoomPrefab(room.activeEntry);
+                if (prefab == null) continue;
+                GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform);
+                instantiatedObjects.Add(instance);
+
+                if (showPivotDebug)
+                    CreatePivotSphere(instance);
             }
         }
-    }
-
-    private GameObject GetRoomPrefab(RoomEntries entries)
-    {
-        // Only spawn when exactly one entry is chosen
-        if (entries == RoomEntries.Left) return roomSingleLeft;
-        if (entries == RoomEntries.Right) return roomSingleRight;
-        if (entries == RoomEntries.Top) return roomSingleTop;
-        if (entries == RoomEntries.Bottom) return roomSingleBottom;
-
-        // No active entry -> do not place a single-entry prefab
-        return null;
     }
 
     private void InstantiateCorridors()
@@ -359,15 +341,56 @@ public class DungeonGenerator : MonoBehaviour
         foreach (var kvp in corridorGrid)
         {
             CorridorTile tile = kvp.Value;
-            Vector3 pos = new Vector3(tile.position.x * corridorSize, tile.position.y * corridorSize, 0);
+            CorridorTileType type = tile.GetTileType();
+            Vector3 position = CorridorCellToWorld(tile.cellPosition);
 
-            GameObject prefab = GetCorridorPrefab(tile.type);
-
-            if (prefab != null)
+            if (useDebugCubes)
             {
-                GameObject instance = Instantiate(prefab, pos, Quaternion.identity, transform);
-                instance.name = $"Corridor_{tile.type}_{tile.position.x}_{tile.position.y}";
+                var cube = CreateDebugCube(position, new Vector3(CORRIDOR_SIZE, CORRIDOR_SIZE, 1f), corridorDebugColor, $"CorridorCube_{tile.cellPosition.x}_{tile.cellPosition.y}");
+                instantiatedObjects.Add(cube);
             }
+            else
+            {
+                GameObject prefab = GetCorridorPrefab(type);
+                if (prefab == null) continue;
+                Quaternion rotation = Quaternion.identity;
+                if (type == CorridorTileType.Horizontal)
+                {
+                    rotation = Quaternion.Euler(0, 0, 90);
+                }
+                GameObject instance = Instantiate(prefab, position, rotation, transform);
+                instantiatedObjects.Add(instance);
+
+                if (showPivotDebug)
+                    CreatePivotSphere(instance);
+            }
+        }
+    }
+
+    private void CreatePivotSphere(GameObject parent)
+    {
+        GameObject pivotDebug = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        pivotDebug.transform.position = parent.transform.position;
+        pivotDebug.transform.localScale = Vector3.one * 0.5f;
+        var r = pivotDebug.GetComponent<Renderer>();
+        if (r != null)
+        {
+            r.material.color = Color.red;
+        }
+        pivotDebug.name = "PivotDebug";
+        pivotDebug.transform.SetParent(parent.transform, true);
+        Destroy(pivotDebug.GetComponent<Collider>());
+    }
+
+    private GameObject GetRoomPrefab(RoomSide entry)
+    {
+        switch (entry)
+        {
+            case RoomSide.Left: return roomPrefabLeft;
+            case RoomSide.Right: return roomPrefabRight;
+            case RoomSide.Top: return roomPrefabTop;
+            case RoomSide.Bottom: return roomPrefabBottom;
+            default: return roomPrefabLeft;
         }
     }
 
@@ -377,63 +400,92 @@ public class DungeonGenerator : MonoBehaviour
         {
             case CorridorTileType.Horizontal: return corridorHorizontal;
             case CorridorTileType.Vertical: return corridorVertical;
-            case CorridorTileType.CornerBottomRight: return cornerBottomRight;
-            case CorridorTileType.CornerBottomLeft: return cornerBottomLeft;
-            case CorridorTileType.CornerTopRight: return cornerTopRight;
-            case CorridorTileType.CornerTopLeft: return cornerTopLeft;
+            case CorridorTileType.CornerBottomRight: return corridorCornerBottomRight;
+            case CorridorTileType.CornerBottomLeft: return corridorCornerBottomLeft;
+            case CorridorTileType.CornerTopRight: return corridorCornerTopRight;
+            case CorridorTileType.CornerTopLeft: return corridorCornerTopLeft;
             default: return corridorHorizontal;
         }
     }
 
-    private void ClearDungeon()
+    private GameObject CreateDebugCube(Vector3 center, Vector3 scale, Color color, string name)
     {
-        foreach (Transform child in transform)
+        var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.name = name;
+        go.transform.SetParent(transform, false);
+        go.transform.position = center;
+        go.transform.localScale = scale;
+
+        var renderer = go.GetComponent<Renderer>();
+        if (renderer != null)
         {
-            Destroy(child.gameObject);
+            var mat = new Material(renderer.sharedMaterial);
+            mat.color = color;
+            renderer.sharedMaterial = mat;
         }
 
-        rooms.Clear();
-        corridorGrid.Clear();
-        activeConnections.Clear();
+        var col3d = go.GetComponent<Collider>();
+        if (col3d != null) Destroy(col3d);
+        var col2d = go.GetComponent<Collider2D>();
+        if (col2d != null) Destroy(col2d);
+
+        return go;
+    }
+
+    private int SnapToGrid(int value, int gridSize)
+    {
+        return Mathf.RoundToInt(value / (float)gridSize) * gridSize;
+    }
+
+    private Vector2 SnapToCorridor(Vector2 point)
+    {
+        return new Vector2(
+            SnapToGrid(Mathf.RoundToInt(point.x), CORRIDOR_SIZE),
+            SnapToGrid(Mathf.RoundToInt(point.y), CORRIDOR_SIZE)
+        );
+    }
+
+    private Vector2Int WorldToCorridorCell(Vector2 worldPos)
+    {
+        return new Vector2Int(
+            Mathf.RoundToInt(worldPos.x / CORRIDOR_SIZE),
+            Mathf.RoundToInt(worldPos.y / CORRIDOR_SIZE)
+        );
+    }
+
+    private Vector3 CorridorCellToWorld(Vector2Int cell)
+    {
+        return new Vector3(
+            cell.x * CORRIDOR_SIZE + CORRIDOR_SIZE / 2f,
+            cell.y * CORRIDOR_SIZE + CORRIDOR_SIZE / 2f,
+            0
+        );
     }
 
     private void OnDrawGizmos()
     {
-        if (!showDebugGizmos || rooms == null || rooms.Count == 0)
-            return;
+        if (rooms == null || rooms.Count == 0) return;
 
         Gizmos.color = Color.green;
-        foreach (RoomData room in rooms)
+        foreach (var room in rooms)
         {
-            Gizmos.DrawWireCube(
-                new Vector3(room.bounds.x + room.bounds.width / 2f, room.bounds.y + room.bounds.height / 2f, 0),
-                new Vector3(room.bounds.width, room.bounds.height, 0.1f)
-            );
-
-            RoomEntries used = activeConnections.ContainsKey(room.floorCenter) ? activeConnections[room.floorCenter] : RoomEntries.None;
-
-            if (used != RoomEntries.None && room.connections.ContainsKey(used))
-            {
-                Gizmos.color = Color.yellow;
-                Vector2Int p = room.connections[used].position;
-                Vector3 connPos = new Vector3(p.x, p.y, 0);
-                Gizmos.DrawSphere(connPos, 0.3f);
-                Gizmos.color = Color.green;
-            }
+            Vector3 center = new Vector3(room.floorCenter.x, room.floorCenter.y, 0);
+            Vector3 size = new Vector3(ROOM_SIZE, ROOM_SIZE, 1);
+            Gizmos.DrawWireCube(center, size);
         }
 
-        if (corridorGrid != null)
+        Gizmos.color = Color.yellow;
+        foreach (var conn in activeConnections)
         {
-            Gizmos.color = Color.blue;
-            foreach (var kvp in corridorGrid)
-            {
-                Vector3 pos = new Vector3(
-                    kvp.Value.position.x * corridorSize + corridorSize / 2f,
-                    kvp.Value.position.y * corridorSize + corridorSize / 2f,
-                    0
-                );
-                Gizmos.DrawWireCube(pos, new Vector3(corridorSize, corridorSize, 0.1f));
-            }
+            Gizmos.DrawSphere(new Vector3(conn.position.x, conn.position.y, 0), 0.3f);
+        }
+
+        Gizmos.color = Color.blue;
+        foreach (var tile in corridorGrid.Values)
+        {
+            Vector3 pos = CorridorCellToWorld(tile.cellPosition);
+            Vector3 size = new Vector3(CORRIDOR_SIZE, CORRIDOR_SIZE, 1);
+            Gizmos.DrawWireCube(pos, size);
         }
     }
 }

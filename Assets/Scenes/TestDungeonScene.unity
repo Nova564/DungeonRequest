@@ -300,35 +300,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7d25d99741c1244a376573827ed87f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonWidth: 400
-  dungeonHeight: 400
-  minRoomSize: 4
+  dungeonWidth: 30
+  dungeonHeight: 30
+  minRoomSize: 10
   maxIterations: 4
-  singleEntryRoomPrefabs:
-  - {fileID: 4096714745732446496, guid: 47d67c0f33af9f3499f939ac3ad7d1e5, type: 3}
-  - {fileID: 4556377498111527128, guid: 865a86e9add3e7243a1ba7eed4f8b674, type: 3}
-  - {fileID: 4992021442596028478, guid: e73a8783e5d895f42a0b62b9b78c33af, type: 3}
-  - {fileID: 6635987780649663090, guid: 40385a05f4e584542a130bc387c3b17c, type: 3}
-  doubleEntryRoomPrefabs:
-  - {fileID: 2281675287957527232, guid: 3b2f5d9a889741642bc5c0edb097095c, type: 3}
-  - {fileID: 2790092530761730466, guid: 3eff96efde1cd1e4e9aa96f902f5dae0, type: 3}
-  tripleEntryRoomPrefabs:
-  - {fileID: 505180986916504442, guid: 94e2440fc8fa3aa40849662159cad20b, type: 3}
-  - {fileID: 2790092530761730466, guid: 93b1fd3c363e0d14d903e69bfe35633d, type: 3}
-  - {fileID: 4989955600265810634, guid: 7475b6e17039bd546a6556365aba05b5, type: 3}
-  - {fileID: 259025551949405738, guid: bc320699dbf944042a77f4ecfe8ec194, type: 3}
-  crossRoomPrefab: {fileID: 6764094854656077341, guid: d7edeb42fc541d04281d313c30dd6a38, type: 3}
-  horizontalCorridorPrefab: {fileID: 1262863655616594046, guid: 049bd8b158dcc93499a3f248bee8fbae, type: 3}
-  verticalCorridorPrefab: {fileID: 4736646717098867247, guid: 62677b481c69a96499f611f804e7abab, type: 3}
-  cornerBottomRightPrefab: {fileID: 2021723937733365721, guid: d60b079564ae18b49b912c4dc5ced3b3, type: 3}
-  cornerBottomLeftPrefab: {fileID: 6417565646791092479, guid: 3461ef1d2e7e17a42b8f20ccad8ef4b0, type: 3}
-  cornerTopRightPrefab: {fileID: 3093132756859926901, guid: 05d1ed4ab830df54bb902b2b20228037, type: 3}
-  cornerTopLeftPrefab: {fileID: 4155557616702308063, guid: e44e0a31e7ed9594aa345c3d9b60106e, type: 3}
-  tJunctionTopPrefab: {fileID: 3423569776055776880, guid: 2e66179e779a41643add0d56603fa432, type: 3}
-  tJunctionBottomPrefab: {fileID: 121639704576022745, guid: 0ce426899b5c81f40b95cfedd866d677, type: 3}
-  tJunctionLeftPrefab: {fileID: 3758219333217908460, guid: 064c99080a03d0244a508c4f7783093d, type: 3}
-  tJunctionRightPrefab: {fileID: 343353163805402626, guid: 6b25701ecf1cb1d49b50ac65d9ff3429, type: 3}
-  crossCorridorPrefab: {fileID: 5095715451900336481, guid: c191cf1d98d9cfb4384340bbf2dbd898, type: 3}
+  ROOM_SIZE: 5
+  CORRIDOR_SIZE: 3
+  roomPrefabLeft: {fileID: 819584936161403305, guid: da507398f5597cd4185d72acb4388f94, type: 3}
+  roomPrefabRight: {fileID: 6349242348494687379, guid: b987e4ab594fa36498507c0107941c4a, type: 3}
+  roomPrefabTop: {fileID: 8425949479181045436, guid: 989f4a4887e06e24b97cfb999fc42ecd, type: 3}
+  roomPrefabBottom: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
+  corridorHorizontal: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  corridorVertical: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  corridorCornerBottomRight: {fileID: 3596340343240273824, guid: 79fed02a43bc1804b887aa779b75fd83, type: 3}
+  corridorCornerBottomLeft: {fileID: 3993794382196609215, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
+  corridorCornerTopRight: {fileID: 270381733816430058, guid: e046dc9825c6c824d84dead985672443, type: 3}
+  corridorCornerTopLeft: {fileID: 2615081394997350371, guid: be37652add8a0bf40be0ccce9a2a2c63, type: 3}
+  useDebugCubes: 1
+  roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
+  corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
+  allPrefabsToDebugCheck: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
