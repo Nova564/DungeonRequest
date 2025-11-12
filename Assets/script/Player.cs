@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    EventLoot loot;
+    
     [SerializeField] float speed;
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;

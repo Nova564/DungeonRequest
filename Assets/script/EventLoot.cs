@@ -2,16 +2,20 @@ using UnityEngine;
 
 public class EventLoot : MonoBehaviour
 {
+    DicoItem objet; // si tu veux t’y connecter plus tard
     private SpriteRenderer lootRender;
     private Color Originalcolor;
     private bool IsPlayerNear = false;
+
+    public string NomDeLarme;
+
     void Start()
     {
         lootRender = GetComponent<SpriteRenderer>();
         if (lootRender != null)
             Originalcolor = lootRender.color;
     }
-        
+
     void Update()
     {
         HandlingHightLight();
@@ -19,11 +23,9 @@ public class EventLoot : MonoBehaviour
 
     void HandlingHightLight()
     {
-        Debug.Log("brillance");
         if (lootRender == null)
-        {
             return;
-        }
+
         if (IsPlayerNear)
         {
             float intensity = 0.5f + Mathf.PingPong(Time.time * 2, 0.5f);
@@ -32,7 +34,6 @@ public class EventLoot : MonoBehaviour
         else
         {
             lootRender.color = Originalcolor;
-
         }
     }
 
@@ -41,14 +42,13 @@ public class EventLoot : MonoBehaviour
         if (item.CompareTag("Player"))
         {
             lootRender = GetComponent<SpriteRenderer>();
-            Debug.Log("Le joueur a touché une arme !");
+            Debug.Log("Le joueur est proche d’un loot !");
             if (lootRender != null)
             {
                 Originalcolor = lootRender.color;
                 IsPlayerNear = true;
             }
         }
-
     }
 
     void OnTriggerStay2D(Collider2D item)
@@ -57,6 +57,12 @@ public class EventLoot : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Space))
             {
+                
+                if (NomDeLarme == "epee")
+                {
+                    objet.ActiverObjet(NomDeLarme);
+                }
+                
                 Destroy(gameObject);
                 lootRender = null;
                 IsPlayerNear = false;
@@ -74,7 +80,7 @@ public class EventLoot : MonoBehaviour
                 lootRender = null;
             }
 
+            IsPlayerNear = false;
         }
-
     }
 }
