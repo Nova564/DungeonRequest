@@ -23,6 +23,10 @@ namespace Components.ProceduralGeneration.BSP
         [Header("Corridors")]
         [SerializeField] private int _corridorSize = 1;
 
+        [Header("Walls")]
+        [SerializeField] private bool _generateWalls = true;
+        [SerializeField] private GameObject _wallPrefab;
+
         [Header("Debug")]
         [SerializeField] private bool _useDebugCubes = true;
         [SerializeField] private bool _showPivotDebug = false;
@@ -48,6 +52,7 @@ namespace Components.ProceduralGeneration.BSP
         private RoomPlacementService _rooms;
         private CorridorService _corridors;
         private PrefabSpawnService _spawner;
+        private WallGenerationService _walls;
 
         protected override async UniTask ApplyGeneration(CancellationToken cancellationToken)
         {
@@ -69,6 +74,12 @@ namespace Components.ProceduralGeneration.BSP
             _spawner.SpawnRooms();
             _spawner.SpawnCorridors();
 
+            if (_generateWalls)
+            {
+                _walls.GenerateWalls();
+                Debug.Log("[BSP] Wall generation completed");
+            }
+
             Debug.Log($"[BSP Prefab Dungeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
         }
 
@@ -78,6 +89,7 @@ namespace Components.ProceduralGeneration.BSP
             _tree ??= new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
             _rooms ??= new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
             _corridors ??= new CorridorService(_corridorSize, _runtimeContext);
+
             _spawner ??= new PrefabSpawnService(
                 _useDebugCubes,
                 _showPivotDebug,
@@ -87,9 +99,18 @@ namespace Components.ProceduralGeneration.BSP
                 _corridorDebugColor,
                 _runtimeContext,
                 GridGenerator.transform,
+                Grid,
                 _roomLeft, _roomRight, _roomTop, _roomBottom,
                 _corridorHorizontal, _corridorVertical,
                 _corridorCornerBR, _corridorCornerBL, _corridorCornerTR, _corridorCornerTL);
+
+            _walls ??= new WallGenerationService(
+                _runtimeContext,
+                Grid,
+                _roomSize,
+                _corridorSize,
+                GridGenerator,
+                _wallPrefab);
         }
 
         private void ConnectLeafRooms()

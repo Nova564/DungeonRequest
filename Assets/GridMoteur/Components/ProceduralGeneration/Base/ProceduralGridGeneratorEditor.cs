@@ -66,6 +66,7 @@ namespace Components.ProceduralGeneration
             }
 
 
+
             if (GUILayout.Button("Generate Grid", GUILayout.Height(30)))
             {
                 if (Application.isPlaying)

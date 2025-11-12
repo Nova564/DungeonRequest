@@ -1,4 +1,5 @@
 using UnityEngine;
+using VTools.Grid;
 
 namespace Components.ProceduralGeneration.BSP
 {
@@ -13,6 +14,7 @@ namespace Components.ProceduralGeneration.BSP
 
         private readonly DungeonRuntimeContext _ctx;
         private readonly Transform _parent;
+        private readonly VTools.Grid.Grid _grid;
 
         private readonly GameObject _roomLeft;
         private readonly GameObject _roomRight;
@@ -67,13 +69,48 @@ namespace Components.ProceduralGeneration.BSP
             _corridorCornerBL = corridorCornerBL;
             _corridorCornerTR = corridorCornerTR;
             _corridorCornerTL = corridorCornerTL;
+
+            _grid = null;
+        }
+
+        public PrefabSpawnService(
+            bool useDebugCubes,
+            bool showPivotDebug,
+            int roomSize,
+            int corridorSize,
+            Color roomDebugColor,
+            Color corridorDebugColor,
+            DungeonRuntimeContext ctx,
+            Transform parent,
+            VTools.Grid.Grid grid,
+            GameObject roomLeft,
+            GameObject roomRight,
+            GameObject roomTop,
+            GameObject roomBottom,
+            GameObject corridorHorizontal,
+            GameObject corridorVertical,
+            GameObject corridorCornerBR,
+            GameObject corridorCornerBL,
+            GameObject corridorCornerTR,
+            GameObject corridorCornerTL)
+            : this(useDebugCubes, showPivotDebug, roomSize, corridorSize, roomDebugColor, corridorDebugColor,
+                   ctx, parent, roomLeft, roomRight, roomTop, roomBottom, corridorHorizontal, corridorVertical,
+                   corridorCornerBR, corridorCornerBL, corridorCornerTR, corridorCornerTL)
+        {
+            _grid = grid;
         }
 
         public void SpawnRooms()
         {
             foreach (var room in _ctx.Rooms)
             {
-                Vector3 pos = new(room.floorCenter.x, room.floorCenter.y, 0);
+                Vector3 pos = new Vector3(room.floorCenter.x, room.floorCenter.y, 0f);
+
+                if (_grid != null)
+                {
+                    pos.x += _grid.OriginPosition.x;
+                    pos.y += _grid.OriginPosition.y;
+                }
 
                 if (_useDebugCubes)
                 {
@@ -109,6 +146,13 @@ namespace Components.ProceduralGeneration.BSP
                 var tile = kvp.Value;
                 var type = tile.GetTileType();
                 Vector3 pos = DungeonGridUtility.CorridorCellToWorld(tile.cellPosition, _corridorSize);
+
+                // Offset by grid origin (XY)
+                if (_grid != null)
+                {
+                    pos.x += _grid.OriginPosition.x;
+                    pos.y += _grid.OriginPosition.y;
+                }
 
                 if (_useDebugCubes)
                 {
