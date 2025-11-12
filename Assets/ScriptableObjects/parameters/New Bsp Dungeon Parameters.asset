@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 890971c56126521459ff9d4663c8ce59, type: 3}
+  m_Name: New Bsp Dungeon Parameters
+  m_EditorClassIdentifier: 
+  dungeonWidth: 100
+  dungeonHeight: 100
+  minRoomSize: 15
+  maxIterations: 4
+  roomSize: 5
+  corridorSize: 1
+  useDebugCubes: 1
+  showPivotDebug: 0
+  roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
+  corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
