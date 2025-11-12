@@ -19,6 +19,7 @@ public class EventLoot : MonoBehaviour
 
     void HandlingHightLight()
     {
+        Debug.Log("brillance");
         if (lootRender == null)
         {
             return;

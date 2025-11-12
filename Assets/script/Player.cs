@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
+    private bool isTouchingPlayer = false;
     private Vector3 originalScale;
 
     private void Start()
@@ -16,9 +17,14 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         MovePlayer();
-        if (!Input.anyKey)
+        if (!isTouchingPlayer)
         {
-            IdleEffect();
+            if (!Input.anyKey) 
+            {
+                IdleEffect();
+
+            }
+            
         }
     }
 
@@ -26,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
     {
         float moveX = 0f;
         float moveY = 0f;
-
 
         if (Input.GetKey(KeyCode.W))
             moveY = 1f;
@@ -40,6 +45,22 @@ public class PlayerMovement : MonoBehaviour
         Vector2 move = new Vector2(moveX, moveY).normalized;
 
         transform.position += (Vector3)(move * speed * Time.deltaTime);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            isTouchingPlayer = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            isTouchingPlayer = false;
+        }
     }
 
     void IdleEffect()

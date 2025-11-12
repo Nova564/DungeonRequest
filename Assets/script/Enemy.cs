@@ -22,7 +22,11 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        IdleEffect();
+        if (!isTouchingPlayer)
+        {
+            IdleEffect();
+        }
+        
         DetectPlayer();
 
         if (isFollowing)

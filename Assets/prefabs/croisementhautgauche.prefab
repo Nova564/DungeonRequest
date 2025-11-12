@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3993794382196609215, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
       propertyPath: m_Name
-      value: croisementhautgauche Variant
+      value: croisementhautgauche
       objectReference: {fileID: 0}
     - target: {fileID: 8464287977502482635, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8464287977502482635, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.042399526
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8464287977502482635, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
       propertyPath: m_LocalPosition.z

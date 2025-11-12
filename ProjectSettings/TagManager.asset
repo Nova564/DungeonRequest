@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Arme
   - loot
+  - Enemy
   layers:
   - Default
   - TransparentFX
