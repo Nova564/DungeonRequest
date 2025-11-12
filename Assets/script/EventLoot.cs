@@ -2,22 +2,13 @@
 
 public class EventLoot : MonoBehaviour
 {
-    DicoItem objet;
     private SpriteRenderer lootRender;
-    private Color Originalcolor;
     private bool IsPlayerNear = false;
-
-    public string NomDeLarme;
 
     void Start()
     {
         lootRender = GetComponent<SpriteRenderer>();
-        if (lootRender != null)
-            Originalcolor = lootRender.color;
-
-        objet = FindObjectOfType<DicoItem>();
     }
-
 
     void Update()
     {
@@ -36,7 +27,7 @@ public class EventLoot : MonoBehaviour
         }
         else
         {
-            lootRender.color = Originalcolor;
+            lootRender.color = Color.white;
         }
     }
 
@@ -44,13 +35,7 @@ public class EventLoot : MonoBehaviour
     {
         if (item.CompareTag("Player"))
         {
-            lootRender = GetComponent<SpriteRenderer>();
-            Debug.Log("Le joueur est proche d’un loot !");
-            if (lootRender != null)
-            {
-                Originalcolor = lootRender.color;
-                IsPlayerNear = true;
-            }
+            IsPlayerNear = true;
         }
     }
 
@@ -60,35 +45,25 @@ public class EventLoot : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                if (NomDeLarme == "epee")
+                if (gameObject.layer == LayerMask.NameToLayer("Arme") || gameObject.layer == LayerMask.NameToLayer("Armure"))
                 {
-                    objet.ActiverObjet(NomDeLarme);
-                }
+                    PlayerEquipement equipement = item.GetComponent<PlayerEquipement>();
+                    if (equipement != null)
+                    {
+                        equipement.ActiverObjet(gameObject);
+                    }
 
-                PlayerEquipement equipement = item.GetComponent<PlayerEquipement>();
-                if (equipement != null)
-                {
-                    equipement.ActiverObjet(NomDeLarme);
+                    Destroy(gameObject);
+                    IsPlayerNear = false;
                 }
-
-                Destroy(gameObject);
-                lootRender = null;
-                IsPlayerNear = false;
             }
         }
     }
-
 
     void OnTriggerExit2D(Collider2D item)
     {
         if (item.CompareTag("Player"))
         {
-            if (lootRender != null)
-            {
-                lootRender.color = Originalcolor;
-                lootRender = null;
-            }
-
             IsPlayerNear = false;
         }
     }
