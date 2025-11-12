@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class EventLoot : MonoBehaviour
 {
-    DicoItem objet; // si tu veux t’y connecter plus tard
+    DicoItem objet;
     private SpriteRenderer lootRender;
     private Color Originalcolor;
     private bool IsPlayerNear = false;
@@ -14,7 +14,10 @@ public class EventLoot : MonoBehaviour
         lootRender = GetComponent<SpriteRenderer>();
         if (lootRender != null)
             Originalcolor = lootRender.color;
+
+        objet = FindObjectOfType<DicoItem>();
     }
+
 
     void Update()
     {
@@ -42,7 +45,7 @@ public class EventLoot : MonoBehaviour
         if (item.CompareTag("Player"))
         {
             lootRender = GetComponent<SpriteRenderer>();
-            Debug.Log("Le joueur est proche d’un loot !");
+            Debug.Log("Le joueur est proche dâ€™un loot !");
             if (lootRender != null)
             {
                 Originalcolor = lootRender.color;
@@ -57,18 +60,24 @@ public class EventLoot : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                
                 if (NomDeLarme == "epee")
                 {
                     objet.ActiverObjet(NomDeLarme);
                 }
-                
+
+                PlayerEquipement equipement = item.GetComponent<PlayerEquipement>();
+                if (equipement != null)
+                {
+                    equipement.ActiverObjet(NomDeLarme);
+                }
+
                 Destroy(gameObject);
                 lootRender = null;
                 IsPlayerNear = false;
             }
         }
     }
+
 
     void OnTriggerExit2D(Collider2D item)
     {
