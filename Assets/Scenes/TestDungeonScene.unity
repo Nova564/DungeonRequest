@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &148934698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 148934699}
+  m_Layer: 0
+  m_Name: ProceduralGeneration
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &148934699
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148934698}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.28234, y: 26.5819, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1050160967
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,74 +287,9 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1 &1767399816
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1767399817}
-  - component: {fileID: 1767399818}
-  m_Layer: 0
-  m_Name: DungeonRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1767399817
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1767399816}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1767399818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1767399816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de7d25d99741c1244a376573827ed87f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dungeonWidth: 30
-  dungeonHeight: 30
-  minRoomSize: 10
-  maxIterations: 4
-  ROOM_SIZE: 5
-  CORRIDOR_SIZE: 3
-  roomPrefabLeft: {fileID: 819584936161403305, guid: da507398f5597cd4185d72acb4388f94, type: 3}
-  roomPrefabRight: {fileID: 6349242348494687379, guid: b987e4ab594fa36498507c0107941c4a, type: 3}
-  roomPrefabTop: {fileID: 8425949479181045436, guid: 989f4a4887e06e24b97cfb999fc42ecd, type: 3}
-  roomPrefabBottom: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
-  corridorHorizontal: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
-  corridorVertical: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
-  corridorCornerBottomRight: {fileID: 3596340343240273824, guid: 79fed02a43bc1804b887aa779b75fd83, type: 3}
-  corridorCornerBottomLeft: {fileID: 3993794382196609215, guid: 60f6f9c1251b4f7489eda22ae7e2fece, type: 3}
-  corridorCornerTopRight: {fileID: 270381733816430058, guid: e046dc9825c6c824d84dead985672443, type: 3}
-  corridorCornerTopLeft: {fileID: 2615081394997350371, guid: be37652add8a0bf40be0ccce9a2a2c63, type: 3}
-  useDebugCubes: 0
-  showPivotDebug: 1
-  roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
-  corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
-  allPrefabsToDebugCheck: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1050160970}
-  - {fileID: 1767399817}
+  - {fileID: 148934699}
