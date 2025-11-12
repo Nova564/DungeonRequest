@@ -27,6 +27,10 @@ namespace Components.ProceduralGeneration.BSP
         [SerializeField] private bool _generateWalls = true;
         [SerializeField] private GameObject _wallPrefab;
 
+        [Header("Player Spawn")]
+        [SerializeField, Tooltip("Transform du player (si pas renseigner il ira chercher un tag Player")]
+        private Transform _player;
+
         [Header("Debug")]
         [SerializeField] private bool _useDebugCubes = true;
         [SerializeField] private bool _showPivotDebug = false;
@@ -77,10 +81,12 @@ namespace Components.ProceduralGeneration.BSP
             if (_generateWalls)
             {
                 _walls.GenerateWalls();
-                Debug.Log("[BSP] Wall generation completed");
+                Debug.Log("[BSP] Generation terminer");
             }
 
-            Debug.Log($"[BSP Prefab Dungeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
+            PlacePlayerRandom();
+
+            Debug.Log($"[BSP Prefab Dongeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
         }
 
         private void InitializeServices()
@@ -89,7 +95,6 @@ namespace Components.ProceduralGeneration.BSP
             _tree ??= new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
             _rooms ??= new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
             _corridors ??= new CorridorService(_corridorSize, _runtimeContext);
-
             _spawner ??= new PrefabSpawnService(
                 _useDebugCubes,
                 _showPivotDebug,
@@ -134,6 +139,78 @@ namespace Components.ProceduralGeneration.BSP
                     _corridors.CreateCorridor(leftRoom, rightRoom, RandomService);
                 }
             }
+        }
+
+        //le spawn du player
+
+        private void PlacePlayerRandom()
+        {
+            var target = _player;
+            if (target == null)
+            {
+                var go = GameObject.FindGameObjectWithTag("Player");
+                if (go != null) target = go.transform;
+            }
+
+            if (target == null)
+            {
+                Debug.LogWarning("[BSP] Pas de player assigné ni de tag Player dans la scène skip");
+                return;
+            }
+
+            bool canUseRooms = _runtimeContext.Rooms.Count > 0;
+            bool canUseCorridors = _runtimeContext.CorridorGrid.Count > 0;
+
+            if (!canUseRooms && !canUseCorridors)
+            {
+                Debug.LogWarning("[BSP] Pas de place pour le player");
+                return;
+            }
+
+            Vector3 spawnPos;
+
+            if (canUseRooms && canUseCorridors)
+            {
+                bool pickRoom = RandomService.Range(0, 2) == 0;
+                spawnPos = pickRoom ? GetRandomRoomCenterWorld() : GetRandomCorridorWorld();
+            }
+            else if (canUseRooms)
+            {
+                spawnPos = GetRandomRoomCenterWorld();
+            }
+            else
+            {
+                spawnPos = GetRandomCorridorWorld();
+            }
+
+            target.position = spawnPos;
+        }
+
+        private Vector3 GetRandomRoomCenterWorld()
+        {
+            int idx = RandomService.Range(0, _runtimeContext.Rooms.Count);
+            var room = _runtimeContext.Rooms[idx];
+            return new Vector3(
+                room.floorCenter.x + Grid.OriginPosition.x,
+                room.floorCenter.y + Grid.OriginPosition.y,
+                0f);
+        }
+
+        private Vector3 GetRandomCorridorWorld()
+        {
+            int idx = RandomService.Range(0, _runtimeContext.CorridorGrid.Count);
+            int i = 0;
+            Vector2Int cellPos = default;
+            foreach (var kv in _runtimeContext.CorridorGrid)
+            {
+                if (i == idx) { cellPos = kv.Key; break; }
+                i++;
+            }
+
+            var world = DungeonGridUtility.CorridorCellToWorld(cellPos, _corridorSize);
+            world.x += Grid.OriginPosition.x;
+            world.y += Grid.OriginPosition.y;
+            return world;
         }
     }
 }
