@@ -4,49 +4,51 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     EventLoot loot;
-    
-    [SerializeField] float speed;
+
+    [SerializeField] float speed = 5f;
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
     private bool isTouchingPlayer = false;
     private Vector3 originalScale;
+    private Rigidbody2D rb;
+
+    private Vector2 moveInput; // Ajout
 
     private void Start()
     {
         originalScale = transform.localScale;
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0;
     }
 
     void Update()
     {
-        MovePlayer();
+        moveInput = Vector2.zero;
+        if (Input.GetKey(KeyCode.W))
+            moveInput.y = 1f;
+        if (Input.GetKey(KeyCode.S))
+            moveInput.y = -1f;
+        if (Input.GetKey(KeyCode.A))
+            moveInput.x = -1f;
+        if (Input.GetKey(KeyCode.D))
+            moveInput.x = 1f;
+        moveInput = moveInput.normalized;
+
         if (!isTouchingPlayer)
         {
-            if (!Input.anyKey) 
+            if (!Input.anyKey)
             {
                 IdleEffect();
-
             }
-            
         }
     }
 
-    void MovePlayer()
+    void FixedUpdate()
     {
-        float moveX = 0f;
-        float moveY = 0f;
-
-        if (Input.GetKey(KeyCode.W))
-            moveY = 1f;
-        if (Input.GetKey(KeyCode.S))
-            moveY = -1f;
-        if (Input.GetKey(KeyCode.A))
-            moveX = -1f;
-        if (Input.GetKey(KeyCode.D))
-            moveX = 1f;
-
-        Vector2 move = new Vector2(moveX, moveY).normalized;
-
-        transform.position += (Vector3)(move * speed * Time.deltaTime);
+        if (moveInput != Vector2.zero)
+        {
+            rb.MovePosition(rb.position + moveInput * speed * Time.fixedDeltaTime);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -68,6 +70,6 @@ public class PlayerMovement : MonoBehaviour
     void IdleEffect()
     {
         float scaleOffset = Mathf.Sin(Time.time * idleScaleSpeed) * idleScaleAmount;
-        transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset,0);
+        transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset, 0);
     }
 }

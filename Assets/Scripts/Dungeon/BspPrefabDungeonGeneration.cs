@@ -76,11 +76,16 @@ namespace Components.ProceduralGeneration.BSP
             await UniTask.Yield(cancellationToken);
 
             _spawner.SpawnRooms();
+            Debug.Log("[BSP] SpawnRooms() done");
+
             _spawner.SpawnCorridors();
+            Debug.Log("[BSP] SpawnCorridors() done");
 
             if (_generateWalls)
             {
+                Debug.Log("[BSP] Walls -> GenerateWalls() start");
                 _walls.GenerateWalls();
+                Debug.Log("[BSP] Walls -> GenerateWalls() done");
                 Debug.Log("[BSP] Generation terminer");
             }
 

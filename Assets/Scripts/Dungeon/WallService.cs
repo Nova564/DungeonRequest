@@ -16,6 +16,9 @@ namespace Components.ProceduralGeneration.BSP
         private HashSet<Vector2Int> _floorCells;
         private HashSet<Vector2Int> _wallCells;
 
+        private int _debugRoomsFloorCount;
+        private int _debugCorridorFloorCount;
+
         public WallGenerationService(
             DungeonRuntimeContext ctx,
             VTools.Grid.Grid grid,
@@ -47,6 +50,8 @@ namespace Components.ProceduralGeneration.BSP
         private void CollectFloorCells()
         {
             _floorCells.Clear();
+            _debugRoomsFloorCount = 0;
+            _debugCorridorFloorCount = 0;
 
             foreach (var room in _ctx.Rooms)
             {
@@ -60,9 +65,9 @@ namespace Components.ProceduralGeneration.BSP
                     for (int y = -halfCells; y <= halfCells; y++)
                     {
                         Vector2Int cell = new Vector2Int(roomGridPos.x + x, roomGridPos.y + y);
-                        if (IsWithinGridBounds(cell))
+                        if (IsWithinGridBounds(cell) && _floorCells.Add(cell))
                         {
-                            _floorCells.Add(cell);
+                            _debugRoomsFloorCount++;
                         }
                     }
                 }
@@ -71,11 +76,20 @@ namespace Components.ProceduralGeneration.BSP
             foreach (var kvp in _ctx.CorridorGrid)
             {
                 Vector2 worldPos = DungeonGridUtility.CorridorCellToWorld(kvp.Key, _corridorSize);
-                Vector2Int gridCell = WorldToGridCell(worldPos, _corridorSize);
+                Vector2Int centerGridCell = WorldToGridCell(worldPos, _corridorSize);
 
-                if (IsWithinGridBounds(gridCell))
+                int cellsPerCorridor = Mathf.CeilToInt(_corridorSize / (float)_grid.CellSize);
+                int halfCells = cellsPerCorridor / 2;
+                for (int x = -halfCells; x <= halfCells; x++)
                 {
-                    _floorCells.Add(gridCell);
+                    for (int y = -halfCells; y <= halfCells; y++)
+                    {
+                        Vector2Int cell = new Vector2Int(centerGridCell.x + x, centerGridCell.y + y);
+                        if (IsWithinGridBounds(cell) && _floorCells.Add(cell))
+                        {
+                            _debugCorridorFloorCount++;
+                        }
+                    }
                 }
             }
         }
@@ -110,27 +124,28 @@ namespace Components.ProceduralGeneration.BSP
         }
 
         private void PlaceWalls()
+{
+    for (int x = 0; x < _grid.Width; x++)
+    {
+        for (int y = 0; y < _grid.Lenght; y++)
         {
-            for (int x = 0; x < _grid.Width; x++)
+            var cellPos = new Vector2Int(x, y);
+            if (!_floorCells.Contains(cellPos))
             {
-                for (int y = 0; y < _grid.Lenght; y++)
+                if (_grid.TryGetCellByCoordinates(x, y, out var cell))
                 {
-                    var cellPos = new Vector2Int(x, y);
-                    if (_floorCells.Contains(cellPos)) continue;
-
-                    if (_grid.TryGetCellByCoordinates(x, y, out var cell))
-                    {
-                        AddWallToCell(cell);
-                    }
+                    AddWallToCell(cell);
                 }
             }
         }
+    }
+}
 
         private void AddWallToCell(Cell cell)
         {
             if (_wallPrefab == null)
             {
-                Debug.LogWarning("[WallGeneration] Wall prefab not assigned!");
+                Debug.LogWarning("[WallGeneration] Wall prefab pas assigné");
                 return;
             }
             var c = cell.Coordinates;
@@ -142,6 +157,16 @@ namespace Components.ProceduralGeneration.BSP
 
             var go = Object.Instantiate(_wallPrefab, pos, Quaternion.identity);
             go.transform.SetParent(_gridGenerator.transform, true);
+
+            var sr = go.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.sortingOrder = -100; 
+            }
+            else
+            {
+                go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, 1f);
+            }
         }
 
         private Vector2Int WorldToGridCell(Vector2 worldPos, float size)
