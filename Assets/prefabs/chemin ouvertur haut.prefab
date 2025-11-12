@@ -271,7 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2871703621892594836}
   m_Layer: 0
-  m_Name: chemin vertical
+  m_Name: chemin ouvertur haut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
