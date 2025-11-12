@@ -38,10 +38,11 @@ namespace Components.ProceduralGeneration.BSP
                     floorCenter = roomCenter
                 };
 
-                room.connectionPoints[RoomSide.Left] = new Vector2(roomX, roomCenter.y);
-                room.connectionPoints[RoomSide.Right] = new Vector2(roomX + _roomSize, roomCenter.y);
-                room.connectionPoints[RoomSide.Top] = new Vector2(roomCenter.x, roomY + _roomSize);
-                room.connectionPoints[RoomSide.Bottom] = new Vector2(roomCenter.x, roomY);
+                float inset = _corridorSize * 0.5f; 
+                room.connectionPoints[RoomSide.Left] = new Vector2(roomX + inset, roomCenter.y);
+                room.connectionPoints[RoomSide.Right] = new Vector2(roomX + _roomSize - inset, roomCenter.y);
+                room.connectionPoints[RoomSide.Top] = new Vector2(roomCenter.x, roomY + _roomSize - inset);
+                room.connectionPoints[RoomSide.Bottom] = new Vector2(roomCenter.x, roomY + inset);
 
                 node.room = roomBounds;
                 _ctx.Rooms.Add(room);
