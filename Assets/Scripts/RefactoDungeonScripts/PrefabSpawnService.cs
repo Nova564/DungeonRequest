@@ -4,7 +4,13 @@ namespace Components.ProceduralGeneration.BSP
 {
     public class PrefabSpawnService
     {
-        private readonly BspDungeonParameters _p;
+        private readonly bool _useDebugCubes;
+        private readonly bool _showPivotDebug;
+        private readonly int _roomSize;
+        private readonly int _corridorSize;
+        private readonly Color _roomDebugColor;
+        private readonly Color _corridorDebugColor;
+
         private readonly DungeonRuntimeContext _ctx;
         private readonly Transform _parent;
 
@@ -21,7 +27,12 @@ namespace Components.ProceduralGeneration.BSP
         private readonly GameObject _corridorCornerTL;
 
         public PrefabSpawnService(
-            BspDungeonParameters p,
+            bool useDebugCubes,
+            bool showPivotDebug,
+            int roomSize,
+            int corridorSize,
+            Color roomDebugColor,
+            Color corridorDebugColor,
             DungeonRuntimeContext ctx,
             Transform parent,
             GameObject roomLeft,
@@ -35,7 +46,13 @@ namespace Components.ProceduralGeneration.BSP
             GameObject corridorCornerTR,
             GameObject corridorCornerTL)
         {
-            _p = p;
+            _useDebugCubes = useDebugCubes;
+            _showPivotDebug = showPivotDebug;
+            _roomSize = roomSize;
+            _corridorSize = corridorSize;
+            _roomDebugColor = roomDebugColor;
+            _corridorDebugColor = corridorDebugColor;
+
             _ctx = ctx;
             _parent = parent;
 
@@ -58,9 +75,9 @@ namespace Components.ProceduralGeneration.BSP
             {
                 Vector3 pos = new(room.floorCenter.x, room.floorCenter.y, 0);
 
-                if (_p.useDebugCubes)
+                if (_useDebugCubes)
                 {
-                    var cube = CreateDebugCube(pos, new Vector3(_p.roomSize, _p.roomSize, 1f), _p.roomDebugColor, $"Room_{room.bounds.xMin}_{room.bounds.yMin}");
+                    var cube = CreateDebugCube(pos, new Vector3(_roomSize, _roomSize, 1f), _roomDebugColor, $"Room_{room.bounds.xMin}_{room.bounds.yMin}");
                     _ctx.SpawnedObjects.Add(cube);
                     continue;
                 }
@@ -80,7 +97,7 @@ namespace Components.ProceduralGeneration.BSP
                 var instance = Object.Instantiate(prefab, pos, rot, _parent);
                 _ctx.SpawnedObjects.Add(instance);
 
-                if (_p.showPivotDebug)
+                if (_showPivotDebug)
                     CreatePivotSphere(instance);
             }
         }
@@ -91,11 +108,11 @@ namespace Components.ProceduralGeneration.BSP
             {
                 var tile = kvp.Value;
                 var type = tile.GetTileType();
-                Vector3 pos = DungeonGridUtility.CorridorCellToWorld(tile.cellPosition, _p.corridorSize);
+                Vector3 pos = DungeonGridUtility.CorridorCellToWorld(tile.cellPosition, _corridorSize);
 
-                if (_p.useDebugCubes)
+                if (_useDebugCubes)
                 {
-                    var cube = CreateDebugCube(pos, new Vector3(_p.corridorSize, _p.corridorSize, 1f), _p.corridorDebugColor, $"Corridor_{tile.cellPosition.x}_{tile.cellPosition.y}");
+                    var cube = CreateDebugCube(pos, new Vector3(_corridorSize, _corridorSize, 1f), _corridorDebugColor, $"Corridor_{tile.cellPosition.x}_{tile.cellPosition.y}");
                     _ctx.SpawnedObjects.Add(cube);
                     continue;
                 }
@@ -107,7 +124,7 @@ namespace Components.ProceduralGeneration.BSP
                 var instance = Object.Instantiate(prefab, pos, rot, _parent);
                 _ctx.SpawnedObjects.Add(instance);
 
-                if (_p.showPivotDebug)
+                if (_showPivotDebug)
                     CreatePivotSphere(instance);
             }
         }

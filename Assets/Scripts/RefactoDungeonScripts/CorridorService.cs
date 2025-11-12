@@ -5,12 +5,12 @@ namespace Components.ProceduralGeneration.BSP
 {
     public class CorridorService
     {
-        private readonly BspDungeonParameters _p;
+        private readonly int _corridorSize;
         private readonly DungeonRuntimeContext _ctx;
 
-        public CorridorService(BspDungeonParameters p, DungeonRuntimeContext ctx)
+        public CorridorService(int corridorSize, DungeonRuntimeContext ctx)
         {
-            _p = p;
+            _corridorSize = corridorSize;
             _ctx = ctx;
         }
 
@@ -35,8 +35,8 @@ namespace Components.ProceduralGeneration.BSP
 
             Vector2 startPoint = a.connectionPoints[sideA];
             Vector2 endPoint = b.connectionPoints[sideB];
-            startPoint = DungeonGridUtility.SnapToCorridor(startPoint, _p.corridorSize);
-            endPoint = DungeonGridUtility.SnapToCorridor(endPoint, _p.corridorSize);
+            startPoint = DungeonGridUtility.SnapToCorridor(startPoint, _corridorSize);
+            endPoint = DungeonGridUtility.SnapToCorridor(endPoint, _corridorSize);
 
             a.usedSides.Add(sideA);
             b.usedSides.Add(sideB);
@@ -59,7 +59,7 @@ namespace Components.ProceduralGeneration.BSP
 
             while (Vector2.Distance(current, to) > 0.1f)
             {
-                Vector2Int cell = DungeonGridUtility.WorldToCorridorCell(current, _p.corridorSize);
+                Vector2Int cell = DungeonGridUtility.WorldToCorridorCell(current, _corridorSize);
                 if (!_ctx.CorridorGrid.ContainsKey(cell))
                     _ctx.CorridorGrid[cell] = new CorridorTile { cellPosition = cell };
 
@@ -68,7 +68,7 @@ namespace Components.ProceduralGeneration.BSP
                 if (Mathf.Abs(direction.y) > 0.5f)
                     _ctx.CorridorGrid[cell].AddDirection(CorridorDirection.Vertical);
 
-                current += direction * _p.corridorSize;
+                current += direction * _corridorSize;
                 if (Vector2.Distance(from, current) > 1000f) break;
             }
         }

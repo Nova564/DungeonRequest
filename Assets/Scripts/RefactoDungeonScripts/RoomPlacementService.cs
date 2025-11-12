@@ -7,12 +7,14 @@ namespace Components.ProceduralGeneration.BSP
 {
     public class RoomPlacementService
     {
-        private readonly BspDungeonParameters _p;
+        private readonly int _roomSize;
+        private readonly int _corridorSize;
         private readonly DungeonRuntimeContext _ctx;
 
-        public RoomPlacementService(BspDungeonParameters p, DungeonRuntimeContext ctx)
+        public RoomPlacementService(int roomSize, int corridorSize, DungeonRuntimeContext ctx)
         {
-            _p = p;
+            _roomSize = roomSize;
+            _corridorSize = corridorSize;
             _ctx = ctx;
         }
 
@@ -24,11 +26,11 @@ namespace Components.ProceduralGeneration.BSP
                 int centerX = b.xMin + b.width / 2;
                 int centerY = b.yMin + b.height / 2;
 
-                int roomX = DungeonGridUtility.SnapToGrid(centerX - _p.roomSize / 2, _p.roomSize);
-                int roomY = DungeonGridUtility.SnapToGrid(centerY - _p.roomSize / 2, _p.roomSize);
+                int roomX = DungeonGridUtility.SnapToGrid(centerX - _roomSize / 2, _roomSize);
+                int roomY = DungeonGridUtility.SnapToGrid(centerY - _roomSize / 2, _roomSize);
 
-                var roomBounds = new RectInt(roomX, roomY, _p.roomSize, _p.roomSize);
-                var roomCenter = new Vector2(roomX + _p.roomSize / 2f, roomY + _p.roomSize / 2f);
+                var roomBounds = new RectInt(roomX, roomY, _roomSize, _roomSize);
+                var roomCenter = new Vector2(roomX + _roomSize / 2f, roomY + _roomSize / 2f);
 
                 var room = new RoomData
                 {
@@ -37,8 +39,8 @@ namespace Components.ProceduralGeneration.BSP
                 };
 
                 room.connectionPoints[RoomSide.Left] = new Vector2(roomX, roomCenter.y);
-                room.connectionPoints[RoomSide.Right] = new Vector2(roomX + _p.roomSize, roomCenter.y);
-                room.connectionPoints[RoomSide.Top] = new Vector2(roomCenter.x, roomY + _p.roomSize);
+                room.connectionPoints[RoomSide.Right] = new Vector2(roomX + _roomSize, roomCenter.y);
+                room.connectionPoints[RoomSide.Top] = new Vector2(roomCenter.x, roomY + _roomSize);
                 room.connectionPoints[RoomSide.Bottom] = new Vector2(roomCenter.x, roomY);
 
                 node.room = roomBounds;
@@ -86,7 +88,7 @@ namespace Components.ProceduralGeneration.BSP
                     if (room.usedSides.Contains(side))
                     {
                         Vector2 cp = room.connectionPoints[side];
-                        Vector2Int cell = DungeonGridUtility.WorldToCorridorCell(cp, _p.corridorSize);
+                        Vector2Int cell = DungeonGridUtility.WorldToCorridorCell(cp, _corridorSize);
                         if (_ctx.CorridorGrid.ContainsKey(cell) || HasCorridorNearby(cp))
                         {
                             room.activeEntry = side;
@@ -101,7 +103,7 @@ namespace Components.ProceduralGeneration.BSP
 
         private bool HasCorridorNearby(Vector2 point)
         {
-            Vector2Int c = DungeonGridUtility.WorldToCorridorCell(point, _p.corridorSize);
+            Vector2Int c = DungeonGridUtility.WorldToCorridorCell(point, _corridorSize);
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++)
                     if (_ctx.CorridorGrid.ContainsKey(c + new Vector2Int(dx, dy)))

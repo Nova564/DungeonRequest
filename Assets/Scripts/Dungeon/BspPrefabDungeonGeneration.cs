@@ -9,8 +9,25 @@ namespace Components.ProceduralGeneration.BSP
     [CreateAssetMenu(menuName = "Procedural Generation Method/BSP Prefab Dungeon (Refactored)")]
     public class BspPrefabDungeonGeneration : ProceduralGenerationMethod
     {
-        [Header("Parameters (SO)")]
-        [SerializeField] private BspDungeonParameters _parameters;
+        [Header("Dungeon Bounds")]
+        [SerializeField] private int _dungeonWidth = 100;
+        [SerializeField] private int _dungeonHeight = 100;
+
+        [Header("BSP")]
+        [SerializeField] private int _minRoomSize = 15;
+        [SerializeField] private int _maxIterations = 4;
+
+        [Header("Rooms")]
+        [SerializeField] private int _roomSize = 5;
+
+        [Header("Corridors")]
+        [SerializeField] private int _corridorSize = 1;
+
+        [Header("Debug")]
+        [SerializeField] private bool _useDebugCubes = true;
+        [SerializeField] private bool _showPivotDebug = false;
+        [SerializeField] private Color _roomDebugColor = new Color(0.2f, 0.9f, 0.2f, 0.6f);
+        [SerializeField] private Color _corridorDebugColor = new Color(0.2f, 0.6f, 1f, 0.6f);
 
         [Header("Room Prefabs")]
         [SerializeField] private GameObject _roomLeft;
@@ -26,7 +43,7 @@ namespace Components.ProceduralGeneration.BSP
         [SerializeField] private GameObject _corridorCornerTR;
         [SerializeField] private GameObject _corridorCornerTL;
 
-        private DungeonRuntimeContext _ctx;
+        private DungeonRuntimeContext _runtimeContext;
         private BspTreeBuilder _tree;
         private RoomPlacementService _rooms;
         private CorridorService _corridors;
@@ -34,20 +51,14 @@ namespace Components.ProceduralGeneration.BSP
 
         protected override async UniTask ApplyGeneration(CancellationToken cancellationToken)
         {
-            if (_parameters == null)
-            {
-                Debug.LogError("[BSP] Missing parameters ScriptableObject.");
-                return;
-            }
-
             InitializeServices();
 
-            _ctx.Clear();
+            _runtimeContext.Clear();
 
-            _ctx.RootNode = _tree.BuildRoot(Grid.Width, Grid.Lenght);
-            _tree.SplitRecursive(_ctx.RootNode, 0);
+            _runtimeContext.RootNode = _tree.BuildRoot(Grid.Width, Grid.Lenght);
+            _tree.SplitRecursive(_runtimeContext.RootNode, 0);
 
-            _rooms.CreateRooms(_ctx.RootNode);
+            _rooms.CreateRooms(_runtimeContext.RootNode);
 
             ConnectLeafRooms();
 
@@ -58,18 +69,23 @@ namespace Components.ProceduralGeneration.BSP
             _spawner.SpawnRooms();
             _spawner.SpawnCorridors();
 
-            Debug.Log($"[BSP Prefab Dungeon] Rooms={_ctx.Rooms.Count} Corridors={_ctx.CorridorGrid.Count}");
+            Debug.Log($"[BSP Prefab Dungeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
         }
 
         private void InitializeServices()
         {
-            _ctx ??= new DungeonRuntimeContext();
-            _tree ??= new BspTreeBuilder(_parameters, RandomService);
-            _rooms ??= new RoomPlacementService(_parameters, _ctx);
-            _corridors ??= new CorridorService(_parameters, _ctx);
+            _runtimeContext ??= new DungeonRuntimeContext();
+            _tree ??= new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
+            _rooms ??= new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
+            _corridors ??= new CorridorService(_corridorSize, _runtimeContext);
             _spawner ??= new PrefabSpawnService(
-                _parameters,
-                _ctx,
+                _useDebugCubes,
+                _showPivotDebug,
+                _roomSize,
+                _corridorSize,
+                _roomDebugColor,
+                _corridorDebugColor,
+                _runtimeContext,
                 GridGenerator.transform,
                 _roomLeft, _roomRight, _roomTop, _roomBottom,
                 _corridorHorizontal, _corridorVertical,
@@ -78,7 +94,7 @@ namespace Components.ProceduralGeneration.BSP
 
         private void ConnectLeafRooms()
         {
-            ConnectRecursive(_ctx.RootNode);
+            ConnectRecursive(_runtimeContext.RootNode);
         }
 
         private void ConnectRecursive(BSPNode node)

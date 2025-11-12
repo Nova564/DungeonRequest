@@ -18,7 +18,7 @@ MonoBehaviour:
   maxIterations: 4
   roomSize: 5
   corridorSize: 1
-  useDebugCubes: 1
+  useDebugCubes: 0
   showPivotDebug: 0
   roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
   corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
