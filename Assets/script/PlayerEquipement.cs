@@ -7,11 +7,13 @@ public class PlayerEquipement : MonoBehaviour
     public GameObject hache;
     public GameObject bouclier;
     public GameObject bouclierPaladin;
+    public GameObject lance;
 
-    void Start()
+
+    void Awake()
     {
-        // 🔹 On s’assure que tout est invisible au lancement du jeu
         DesactiverTout();
+        Debug.Log("lance actif après Awake ? " + lance.activeSelf);
     }
 
     private void DesactiverTout()
@@ -20,6 +22,7 @@ public class PlayerEquipement : MonoBehaviour
         if (hache != null) hache.SetActive(false);
         if (bouclier != null) bouclier.SetActive(false);
         if (bouclierPaladin != null) bouclierPaladin.SetActive(false);
+        if (lance != null) lance.SetActive(false);
     }
 
     public void ActiverObjet(string nom)
@@ -32,6 +35,7 @@ public class PlayerEquipement : MonoBehaviour
             case "Arme":
                 if (epee != null) epee.SetActive(false);
                 if (hache != null) hache.SetActive(false);
+                if (lance != null) lance.SetActive(false);
                 break;
 
             case "Armure":
@@ -45,6 +49,9 @@ public class PlayerEquipement : MonoBehaviour
         {
             case "epee":
                 if (epee != null) epee.SetActive(true);
+                break;
+            case "lance":
+                if (lance != null) lance.SetActive(true);
                 break;
             case "hache":
                 if (hache != null) hache.SetActive(true);

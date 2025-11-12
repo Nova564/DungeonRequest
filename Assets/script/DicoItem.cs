@@ -28,7 +28,8 @@ public class DicoItem : MonoBehaviour
             { "epee", new InfosObjet { type = TypeObjet.Arme, name = "epee", ramasse = false } },
             { "hache", new InfosObjet { type = TypeObjet.Arme, name = "hache", ramasse = false } },
             { "bouclier", new InfosObjet { type = TypeObjet.Armure, name = "bouclier", ramasse = false } },
-            { "bouclier paladin", new InfosObjet { type = TypeObjet.Armure, name = "bouclier paladin", ramasse = false } }
+            { "bouclier paladin", new InfosObjet { type = TypeObjet.Armure, name = "bouclier paladin", ramasse = false } },
+            { "lance", new InfosObjet { type = TypeObjet.Armure, name = "lance", ramasse = false }}
         };
     }
 
