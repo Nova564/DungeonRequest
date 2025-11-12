@@ -18,11 +18,12 @@ MonoBehaviour:
   _minRoomSize: 15
   _maxIterations: 4
   _roomSize: 5
-  _corridorSize: 1
+  _corridorSize: 3
   _generateWalls: 1
   _wallPrefab: {fileID: 8540881627955225178, guid: 991451dbfd3ba604b9009573a07b0ef3, type: 3}
+  _player: {fileID: 0}
   _useDebugCubes: 0
-  _showPivotDebug: 0
+  _showPivotDebug: 1
   _roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
   _corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
   _roomLeft: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}

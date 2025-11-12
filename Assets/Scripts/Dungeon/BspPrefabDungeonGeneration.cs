@@ -1,7 +1,8 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
 using Components.ProceduralGeneration;
+using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
 using VTools.RandomService;
 
 namespace Components.ProceduralGeneration.BSP
@@ -30,6 +31,9 @@ namespace Components.ProceduralGeneration.BSP
         [Header("Player Spawn")]
         [SerializeField, Tooltip("Transform du player (si pas renseigner il ira chercher un tag Player")]
         private Transform _player;
+
+        [Header("Item Spawning")]
+        [SerializeField] private List<ItemSpawnConfig> _itemSpawns = new();
 
         [Header("Debug")]
         [SerializeField] private bool _useDebugCubes = true;
@@ -77,6 +81,7 @@ namespace Components.ProceduralGeneration.BSP
 
             _spawner.SpawnRooms();
             Debug.Log("[BSP] SpawnRooms() done");
+            SpawnItemsInRooms();
 
             _spawner.SpawnCorridors();
             Debug.Log("[BSP] SpawnCorridors() done");
@@ -217,5 +222,50 @@ namespace Components.ProceduralGeneration.BSP
             world.y += Grid.OriginPosition.y;
             return world;
         }
+        //drop items 
+        private void SpawnItemsInRooms()
+        {
+            if (_runtimeContext.Rooms.Count == 0 || _itemSpawns == null || _itemSpawns.Count == 0)
+                return;
+
+            foreach (var itemConfig in _itemSpawns)
+            {
+                int totalSpawned = 0;
+
+                foreach (var room in _runtimeContext.Rooms)
+                {
+                    int spawnedInRoom = 0;
+                    for (int i = 0; i < itemConfig.maxPerRoom; i++)
+                    {
+                        if (totalSpawned >= itemConfig.maxTotal)
+                            break;
+
+                        if (RandomService.Range(0f, 1f) <= itemConfig.dropRate)
+                        {
+                            var roomRect = room.bounds;
+                            float dungeonX = RandomService.Range(roomRect.xMin + 0.5f, roomRect.xMax - 0.5f);
+                            float dungeonY = RandomService.Range(roomRect.yMin + 0.5f, roomRect.yMax - 0.5f);
+
+                            Vector3 spawnPos = new Vector3(
+                                dungeonX + Grid.OriginPosition.x,
+                                dungeonY + Grid.OriginPosition.y,
+                                0f
+                            );
+
+                            var go = Object.Instantiate(itemConfig.prefab, spawnPos, Quaternion.identity, GridGenerator.transform);
+                            _runtimeContext.SpawnedObjects.Add(go);
+
+                            spawnedInRoom++;
+                            totalSpawned++;
+                        }
+                    }
+                    if (totalSpawned >= itemConfig.maxTotal)
+                        break;
+                }
+            }
+
+            Debug.Log($"[BSP] Items spawned across all rooms");
+        }
     }
 }
+  

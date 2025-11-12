@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 27091449}
   - component: {fileID: 27091448}
   m_Layer: 7
-  m_Name: tile_0117_0
+  m_Name: Hammer
   m_TagString: marteau
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 166594231}
   - component: {fileID: 166594230}
   m_Layer: 7
-  m_Name: tile_0118_0
+  m_Name: Axe
   m_TagString: hache
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -743,7 +743,7 @@ GameObject:
   - component: {fileID: 616392514}
   - component: {fileID: 616392511}
   m_Layer: 0
-  m_Name: tile_0109_0
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1082,7 +1082,7 @@ GameObject:
   - component: {fileID: 783463597}
   - component: {fileID: 783463596}
   m_Layer: 6
-  m_Name: tile_0101_0
+  m_Name: RoundShield
   m_TagString: bouclier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1262,7 +1262,7 @@ GameObject:
   - component: {fileID: 1259782731}
   - component: {fileID: 1259782730}
   m_Layer: 6
-  m_Name: tile_0102_0
+  m_Name: Shield
   m_TagString: bouclier paladin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1442,7 +1442,7 @@ GameObject:
   - component: {fileID: 1545687244}
   - component: {fileID: 1545687241}
   m_Layer: 7
-  m_Name: tile_0104_0
+  m_Name: Sword
   m_TagString: epee
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1735,7 +1735,7 @@ GameObject:
   - component: {fileID: 1853055336}
   - component: {fileID: 1853055335}
   m_Layer: 7
-  m_Name: tile_0105_0
+  m_Name: Dagger
   m_TagString: lance
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
