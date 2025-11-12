@@ -22,14 +22,15 @@ public class DicoItem : MonoBehaviour
 
     void Start()
     {
+
         objets = new Dictionary<string, InfosObjet>()
         {
             { "epee", new InfosObjet { type = TypeObjet.Arme, name = "epee", ramasse = false } },
             { "hache", new InfosObjet { type = TypeObjet.Arme, name = "hache", ramasse = false } },
-            { "bouclier", new InfosObjet { type = TypeObjet.Armure, name = "bouclier", ramasse = false } }
+            { "bouclier", new InfosObjet { type = TypeObjet.Armure, name = "bouclier", ramasse = false } },
+            { "bouclier paladin", new InfosObjet { type = TypeObjet.Armure, name = "bouclier paladin", ramasse = false } }
         };
     }
-
 
     public void ActiverObjet(string elem)
     {
@@ -41,8 +42,19 @@ public class DicoItem : MonoBehaviour
                 kvp.Value.ramasse = false;
         }
 
-
         objets[elem].ramasse = true;
+    }
 
+    public List<InfosObjet> ObtenirObjetsRamasses()
+    {
+        List<InfosObjet> objetsRamasses = new List<InfosObjet>();
+
+        foreach (var kvp in objets)
+        {
+            if (kvp.Value.ramasse)
+                objetsRamasses.Add(kvp.Value);
+        }
+
+        return objetsRamasses;
     }
 }
