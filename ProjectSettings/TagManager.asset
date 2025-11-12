@@ -4,9 +4,15 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Arme
   - loot
   - Enemy
+  - lance
+  - hache
+  - epee
+  - bouclier paladin
+  - bouclier
+  - arme
+  - marteau
   layers:
   - Default
   - TransparentFX
@@ -14,8 +20,8 @@ TagManager:
   - obstacle
   - Water
   - UI
-  - 
-  - 
+  - Armure
+  - Arme
   - 
   - 
   - 
