@@ -58,9 +58,8 @@ public class CombatSystem : MonoBehaviour
 
     private void TryAttack()
     {
-        float attackRate = equipment != null ? equipment.GetAttackRate() : 1f;
-        attackRate = Mathf.Max(0.01f, attackRate);
-        float cooldown = 1f / attackRate;
+        float rawAttackRate = equipment != null ? equipment.GetAttackRate() : 1f;
+        float cooldown = Mathf.Max(0.01f, rawAttackRate); 
 
         if (Time.time < nextAttackAllowedTime)
             return;
@@ -69,19 +68,13 @@ public class CombatSystem : MonoBehaviour
 
         if (equipment != null && equipment.currentWeaponStats != null)
         {
-            if (string.Equals(equipment.currentWeaponStats.itemTag, "epee"))
-            {
-                Debug.Log("attack animation with sword");
-            }
-            else
-            {
-                Debug.Log("attack animation with " + equipment.currentWeaponStats.itemTag);
-            }
+            Debug.Log($"attack animation with {equipment.currentWeaponStats.itemTag} (cooldown={cooldown}s)");
         }
         else
         {
-            Debug.Log("attack animation (no weapon equipped)");
+            Debug.Log($"attack animation (no weapon equipped) (cooldown={cooldown:0.###}s)");
         }
+
         StopAllCoroutines();
         StartCoroutine(PerformAttackCoroutine());
     }
