@@ -11,15 +11,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
     [SerializeField] public float detectionRadius;
-    [SerializeField] LayerMask obstacleMask; 
+    [SerializeField] LayerMask obstacleMask;
 
     [Header("Combat")]
     [SerializeField] private float maxHealth = 20f;
     [SerializeField] private float knockbackDuration = 0.12f;
     [SerializeField] private float flashDuration = 0.08f;
-    [SerializeField] private float contactDamage = 4f;           
-    [SerializeField] private float attackCooldown = 0.75f;      
-    [SerializeField] private float attackRange = 0.25f;          
+    [SerializeField] private float contactDamage = 4f;
+    [SerializeField] private float attackCooldown = 0.75f;
+    [SerializeField] private float attackRange = 0.25f;
 
     private float currentHealth;
     private bool isKnockedBack = false;
@@ -78,7 +78,7 @@ public class Enemy : MonoBehaviour
     {
         if (rb != null)
         {
-            if (isKnockedBack) return; 
+            if (isKnockedBack) return;
 
             rb.linearVelocity = desiredMoveDir * speed;
 
@@ -97,6 +97,7 @@ public class Enemy : MonoBehaviour
         float scaleOffset = Mathf.Sin(Time.time * idleScaleSpeed) * idleScaleAmount;
         transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset, 0);
     }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -214,7 +215,7 @@ public class Enemy : MonoBehaviour
 
         if (rb != null)
         {
-            rb.linearVelocity = direction * force; 
+            rb.linearVelocity = direction * force;
             while (elapsed < knockbackDuration)
             {
                 elapsed += Time.deltaTime;
@@ -258,5 +259,20 @@ public class Enemy : MonoBehaviour
     {
         if (rb != null) rb.linearVelocity = Vector2.zero;
         Destroy(gameObject);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public float GetHealthPercent()
+    {
+        return Mathf.Clamp01(currentHealth / maxHealth);
     }
 }

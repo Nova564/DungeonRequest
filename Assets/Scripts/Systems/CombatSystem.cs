@@ -153,7 +153,6 @@ public class CombatSystem : MonoBehaviour
             hitboxSpriteRenderer.color = new Color(1f, 0f, 0f, 0.25f);
             hitboxSpriteRenderer.enabled = false;
             hitboxSpriteRenderer.sortingOrder = 1000;
-            hitboxSpriteRenderer.sprite = Resources.GetBuiltinResource<Sprite>("Sprites/Default.psd");
         }
     }
 
