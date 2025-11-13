@@ -94,6 +94,7 @@ public class CombatSystem : MonoBehaviour
             return;
 
         animator.ResetTrigger(attackTriggerName);
+        Debug.Log("Triggering attack animation");
         animator.SetTrigger(attackTriggerName);
     }
 
