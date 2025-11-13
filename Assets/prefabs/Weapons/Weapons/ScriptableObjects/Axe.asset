@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemTag: Axe
   category: 0
-  attack: 10
+  attack: 1
   defense: 0
-  moveSpeedBonus: -3
-  attackRate: 1
+  moveSpeedBonus: 10
+  attackRate: 0.1

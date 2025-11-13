@@ -27,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
 
     private float lastSpeed = float.NaN;
 
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
+
     private void Start()
     {
         originalScale = transform.localScale;
