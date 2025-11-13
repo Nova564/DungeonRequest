@@ -115,12 +115,13 @@ namespace Components.ProceduralGeneration.BSP
 
         private void InitializeServices()
         {
-            //initialisation de tout les services et verification
             _runtimeContext ??= new DungeonRuntimeContext();
-            _tree ??= new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
-            _rooms ??= new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
-            _corridors ??= new CorridorService(_corridorSize, _runtimeContext);
-            _spawner ??= new PrefabSpawnService(
+
+            _tree = new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
+            _rooms = new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
+            _corridors = new CorridorService(_corridorSize, _runtimeContext);
+
+            _spawner = new PrefabSpawnService(
                 _useDebugCubes,
                 _showPivotDebug,
                 _roomSize,
@@ -128,18 +129,18 @@ namespace Components.ProceduralGeneration.BSP
                 _roomDebugColor,
                 _corridorDebugColor,
                 _runtimeContext,
-                GridGenerator.transform,
-                Grid,
+                GridGenerator.transform,   
+                Grid,                      
                 _roomLeft, _roomRight, _roomTop, _roomBottom,
                 _corridorHorizontal, _corridorVertical,
                 _corridorCornerBR, _corridorCornerBL, _corridorCornerTR, _corridorCornerTL);
 
-            _walls ??= new WallGenerationService(
+            _walls = new WallGenerationService(
                 _runtimeContext,
-                Grid,
+                Grid,                      
                 _roomSize,
                 _corridorSize,
-                GridGenerator,
+                GridGenerator,             
                 _wallPrefab);
         }
 

@@ -42,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
         if (equipment == null)
             equipment = GetComponent<PlayerEquipment>();
 
-        // Initialize health and visuals
         currentHealth = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
@@ -145,6 +144,10 @@ public class PlayerMovement : MonoBehaviour
     private void Die()
     {
         isDead = true;
-        Destroy(gameObject);
+        GameOverMenu gameOverMenu = FindFirstObjectByType<GameOverMenu>();
+        if (gameOverMenu != null)
+            gameOverMenu.ShowGameOver();
+
+        gameObject.SetActive(false);
     }
 }

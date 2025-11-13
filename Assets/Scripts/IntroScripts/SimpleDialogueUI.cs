@@ -7,7 +7,7 @@ public class SimpleDialogueUI : MonoBehaviour
 
     [SerializeField] private GameObject _dialoguePanel;
     [SerializeField] private TextMeshProUGUI _dialogueText;
-    [SerializeField] private TextMeshProUGUI _continueHint; // "(Appuyez sur E pour continuer)"
+    [SerializeField] private TextMeshProUGUI _continueHint; 
 
     private string[] _currentLines;
     private int _currentLineIndex;

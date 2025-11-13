@@ -13,4 +13,8 @@ MonoBehaviour:
   m_Name: Regret
   m_EditorClassIdentifier: 
   lines:
-  - Vous le regretterez !
+  - "Une pancarte qui semble \xEAtre ici depuis des d\xE9cennies"
+  - "On peut difficillement d\xE9chiffrer les mots :"
+  - CETTE GR..T.TE EST DA.GERE..SE NE SURTOUT PAS.....
+  - "Impossible de conna\xEEtre la suite.."
+  - "Pas grave on la d\xE9couvrira une fois \xE0 l'int\xE9rieur"

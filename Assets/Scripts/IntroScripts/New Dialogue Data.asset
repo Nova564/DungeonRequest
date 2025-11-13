@@ -13,4 +13,8 @@ MonoBehaviour:
   m_Name: New Dialogue Data
   m_EditorClassIdentifier: 
   lines:
-  - testestestestest test testt est test test
+  - Hey petit
+  - Il parait qu'il y a un dongeon pas loin d'ici
+  - "Une grotte.. Personne n'a jamais os\xE9 y entrer "
+  - "Toi qui ne croit pas \xE0 ce genre de l\xE9gende pourquoi tu n'y jeterais pas
+    un coup d'oeil ?"
