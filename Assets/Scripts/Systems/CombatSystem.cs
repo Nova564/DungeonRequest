@@ -11,10 +11,14 @@ public class CombatSystem : MonoBehaviour
     [SerializeField] private float attackDuration = 0.15f;
 
     [Tooltip("Taille de la hitbox")]
-    [SerializeField] private Vector2 hitboxSize = new Vector2(2.0f, 2.0f); 
+    [SerializeField] private Vector2 hitboxSize = new Vector2(2.0f, 2.0f);
 
-    [Tooltip("Layers that can be hit (optional for future).")]
+    [Tooltip("Layers that can be hit")]
     [SerializeField] private LayerMask hittableLayers;
+
+    [Header("Damage/Knockback")]
+    [SerializeField] private float defaultDamage = 1f;
+    [SerializeField] private float knockbackForce = 8f;
 
     [Header("Move Speed")]
     [Tooltip("Base movespeed du joueur")]
@@ -90,9 +94,21 @@ public class CombatSystem : MonoBehaviour
         hitboxCollider.enabled = true;
 
         Vector2 worldCenter = hitboxTransform.position;
+
         Collider2D[] hits = Physics2D.OverlapBoxAll(worldCenter, hitboxSize, 0f, hittableLayers);
         for (int i = 0; i < hits.Length; i++)
         {
+            Enemy enemy = hits[i].GetComponentInParent<Enemy>();
+            if (enemy != null)
+            {
+                float damage = defaultDamage;
+                if (equipment != null && equipment.currentWeaponStats != null)
+                    damage = Mathf.Max(0f, equipment.currentWeaponStats.attack);
+
+                enemy.ApplyHit(worldCenter, damage, knockbackForce);
+                continue;
+            }
+
             Debug.Log("Hit: " + hits[i].name);
         }
 
@@ -144,6 +160,7 @@ public class CombatSystem : MonoBehaviour
             hitboxSpriteRenderer.color = new Color(1f, 0f, 0f, 0.25f);
             hitboxSpriteRenderer.enabled = false;
             hitboxSpriteRenderer.sortingOrder = 1000;
+            hitboxSpriteRenderer.sprite = Resources.GetBuiltinResource<Sprite>("Sprites/Default.psd");
         }
     }
 
