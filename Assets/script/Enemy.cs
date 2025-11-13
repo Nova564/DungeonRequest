@@ -11,15 +11,19 @@ public class Enemy : MonoBehaviour
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
     [SerializeField] public float detectionRadius;
-    [SerializeField] LayerMask obstacleMask;
+    [SerializeField] LayerMask obstacleMask; // Should NOT include "Player"
 
     [Header("Combat")]
     [SerializeField] private float maxHealth = 20f;
     [SerializeField] private float knockbackDuration = 0.12f;
     [SerializeField] private float flashDuration = 0.08f;
+    [SerializeField] private float contactDamage = 4f;           // damage per attack
+    [SerializeField] private float attackCooldown = 0.75f;       // seconds between attacks
+    [SerializeField] private float attackRange = 0.25f;          // stop distance to avoid touching
 
     private float currentHealth;
     private bool isKnockedBack = false;
+    private float nextAttackTime = 0f;
 
     private Vector3 originalScale;
     private SpriteRenderer spriteRenderer;
@@ -27,9 +31,13 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D col;
 
+    // Desired movement direction, applied in FixedUpdate
+    private Vector2 desiredMoveDir = Vector2.zero;
+
     void Start()
     {
-        obstacleMask = LayerMask.GetMask("Player", "Wall");
+        if (obstacleMask == 0)
+            obstacleMask = LayerMask.GetMask("Wall", "Obstacle");
 
         originalScale = transform.localScale;
 
@@ -58,9 +66,24 @@ public class Enemy : MonoBehaviour
 
         DetectPlayer();
 
-        if (isFollowing)
+        UpdateChaseAndAttack();
+    }
+
+    void FixedUpdate()
+    {
+        if (rb != null)
         {
-            Follow(Player);
+            if (isKnockedBack) return; 
+
+            rb.linearVelocity = desiredMoveDir * speed;
+
+            if (desiredMoveDir == Vector2.zero && rb.linearVelocity != Vector2.zero)
+                rb.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            if (desiredMoveDir != Vector2.zero)
+                transform.position += (Vector3)(desiredMoveDir * speed * Time.fixedDeltaTime);
         }
     }
 
@@ -69,26 +92,21 @@ public class Enemy : MonoBehaviour
         float scaleOffset = Mathf.Sin(Time.time * idleScaleSpeed) * idleScaleAmount;
         transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset, 0);
     }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
-        {
             isTouchingPlayer = true;
-        }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
-        {
             isTouchingPlayer = false;
-        }
     }
 
     void DetectPlayer()
     {
-        if (Player == null) return;
+        if (Player == null) { isFollowing = false; return; }
 
         Vector2 direction = (Player.transform.position - transform.position).normalized;
         float distance = Vector2.Distance(transform.position, Player.transform.position);
@@ -96,15 +114,7 @@ public class Enemy : MonoBehaviour
         if (distance <= detectionRadius)
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance, obstacleMask);
-
-            if (hit.collider == null)
-            {
-                isFollowing = true;
-            }
-            else
-            {
-                isFollowing = false;
-            }
+            isFollowing = (hit.collider == null);
         }
         else
         {
@@ -112,19 +122,70 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Follow(GameObject target)
+    void UpdateChaseAndAttack()
     {
-        if (isKnockedBack) return;
-        if (isTouchingPlayer) return;
+        if (Player == null || !isFollowing)
+        {
+            desiredMoveDir = Vector2.zero;
+            return;
+        }
+        if (isKnockedBack)
+        {
+            desiredMoveDir = Vector2.zero;
+            return;
+        }
 
-        Vector3 enemyCenter = GetComponent<Collider2D>().bounds.center;
-        Vector3 playerCenter = target.GetComponent<Collider2D>().bounds.center;
-        Vector2 direction = (playerCenter - enemyCenter).normalized;
-        transform.position += (Vector3)(direction * speed * Time.deltaTime);
+        var targetCol = Player.GetComponent<Collider2D>();
+        Vector3 enemyCenter = (col != null) ? col.bounds.center : transform.position;
+        Vector3 playerCenter = (targetCol != null) ? targetCol.bounds.center : Player.transform.position;
+        Vector2 dir = ((Vector2)(playerCenter - enemyCenter)).normalized;
+
+        bool inRange = false;
+        if (col != null && targetCol != null)
+        {
+            ColliderDistance2D cd = col.Distance(targetCol);
+            inRange = cd.distance <= attackRange;
+        }
+        else
+        {
+            inRange = Vector2.Distance(enemyCenter, playerCenter) <= (attackRange + 0.5f);
+        }
+
+        if (inRange)
+        {
+            desiredMoveDir = Vector2.zero;
+            TryAttack();
+        }
+        else
+        {
+            desiredMoveDir = dir;
+        }
     }
+
+    void TryAttack()
+    {
+        if (Time.time < nextAttackTime) return;
+
+        DealDamageToPlayer();
+
+        nextAttackTime = Time.time + attackCooldown;
+    }
+
+    void DealDamageToPlayer()
+    {
+        if (Player == null) return;
+
+        var player = Player.GetComponent<PlayerMovement>();
+        if (player == null) return;
+        if (player.isDead) return;
+
+        player.ApplyHit(contactDamage);
+    }
+
     public void ApplyHit(Vector2 hitOrigin, float damage, float knockbackForce)
     {
         Vector2 dir = ((Vector2)transform.position - hitOrigin).normalized;
+
         StopAllCoroutines();
         StartCoroutine(KnockbackCoroutine(dir, knockbackForce));
         StartCoroutine(FlashCoroutine());
@@ -145,11 +206,10 @@ public class Enemy : MonoBehaviour
         isKnockedBack = true;
 
         float elapsed = 0f;
-        Vector2 startPos = transform.position;
 
         if (rb != null)
         {
-            rb.linearVelocity = direction * force;
+            rb.linearVelocity = direction * force; 
             while (elapsed < knockbackDuration)
             {
                 elapsed += Time.deltaTime;
@@ -159,8 +219,8 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Vector2 targetOffset = direction * force * 0.05f; 
-            Vector2 targetPos = (Vector2)startPos + targetOffset;
+            Vector2 startPos = transform.position;
+            Vector2 targetPos = startPos + direction * force * 0.05f;
 
             while (elapsed < knockbackDuration)
             {
@@ -191,6 +251,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        if (rb != null) rb.linearVelocity = Vector2.zero;
         Destroy(gameObject);
     }
 }

@@ -18,12 +18,12 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - obstacle
+  - Wall
   - Water
   - UI
   - Armor
   - Weapon
-  - 
+  - Enemy
   - 
   - 
   - 

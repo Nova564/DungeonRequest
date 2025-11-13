@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c5973a363ccbf4f87d23b7f2d4693e, type: 3}
   m_Name: Dagger
   m_EditorClassIdentifier: 
-  itemTag: 
+  itemTag: Dagger
   category: 0
   attack: 1
   defense: 0

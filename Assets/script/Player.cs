@@ -5,18 +5,27 @@ public class PlayerMovement : MonoBehaviour
 {
     EventLoot loot;
 
-    [SerializeField] float speed = 5f; 
+    [SerializeField] float speed = 5f;
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
 
-    [SerializeField] private PlayerEquipment equipment; 
+    [SerializeField] private PlayerEquipment equipment;
+
+    [Header("Combat")]
+    [SerializeField] private float maxHealth = 10f;
+    [SerializeField] private float flashDuration = 0.08f;
+    public bool isDead = false;
+
+    private float currentHealth;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
 
     private bool isTouchingPlayer = false;
     private Vector3 originalScale;
     private Rigidbody2D rb;
     private Vector2 moveInput;
 
-    private float lastSpeed = float.NaN; 
+    private float lastSpeed = float.NaN;
 
     private void Start()
     {
@@ -26,6 +35,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (equipment == null)
             equipment = GetComponent<PlayerEquipment>();
+
+        // Initialize health and visuals
+        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
     }
 
     void Update()
@@ -87,5 +104,34 @@ public class PlayerMovement : MonoBehaviour
     {
         float scaleOffset = Mathf.Sin(Time.time * idleScaleSpeed) * idleScaleAmount;
         transform.localScale = originalScale + new Vector3(scaleOffset, scaleOffset, 0);
+    }
+
+    public void ApplyHit(float damage)
+    {
+        if (isDead) return;
+
+        currentHealth -= Mathf.Max(0f, damage);
+        StartCoroutine(FlashCoroutine());
+
+        if (currentHealth <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private System.Collections.IEnumerator FlashCoroutine()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.red;
+            yield return new WaitForSeconds(flashDuration);
+            spriteRenderer.color = originalColor;
+        }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        Destroy(gameObject);
     }
 }

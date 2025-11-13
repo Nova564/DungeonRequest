@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c5973a363ccbf4f87d23b7f2d4693e, type: 3}
   m_Name: Hammer
   m_EditorClassIdentifier: 
-  itemTag: 
+  itemTag: Hammer
   category: 0
   attack: 0
   defense: 0
-  moveSpeedBonus: -10
+  moveSpeedBonus: -100
   attackRate: 1
