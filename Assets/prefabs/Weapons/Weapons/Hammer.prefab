@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1067725797831167487}
   - component: {fileID: 3415841781805953495}
   - component: {fileID: -2613761382360348865}
+  - component: {fileID: 5219430790692106853}
   m_Layer: 7
   m_Name: Hammer
   m_TagString: Hammer
@@ -189,3 +190,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: f409461ec8c03774d8c776094ca24af4, type: 2}
+--- !u!95 &5219430790692106853
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8235543716416661632}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d574ec9cec8be7d4381f47bf933dc35d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
