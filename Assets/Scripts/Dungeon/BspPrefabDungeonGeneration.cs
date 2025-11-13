@@ -80,17 +80,17 @@ namespace Components.ProceduralGeneration.BSP
             await UniTask.Yield(cancellationToken);
 
             _spawner.SpawnRooms();
-            Debug.Log("[BSP] SpawnRooms() done");
+            Debug.Log("[BSP] SpawnRooms() fini");
             SpawnItemsInRooms();
 
             _spawner.SpawnCorridors();
-            Debug.Log("[BSP] SpawnCorridors() done");
+            Debug.Log("[BSP] SpawnCorridors() fini");
 
             if (_generateWalls)
             {
-                Debug.Log("[BSP] Walls -> GenerateWalls() start");
+                Debug.Log("[BSP] Walls GenerateWalls() commence");
                 _walls.GenerateWalls();
-                Debug.Log("[BSP] Walls -> GenerateWalls() done");
+                Debug.Log("[BSP] Walls GenerateWalls() termine");
                 Debug.Log("[BSP] Generation terminer");
             }
 
@@ -101,6 +101,7 @@ namespace Components.ProceduralGeneration.BSP
 
         private void InitializeServices()
         {
+            //initialisation de tout les services et verification
             _runtimeContext ??= new DungeonRuntimeContext();
             _tree ??= new BspTreeBuilder(_dungeonWidth, _dungeonHeight, _minRoomSize, _maxIterations, RandomService);
             _rooms ??= new RoomPlacementService(_roomSize, _corridorSize, _runtimeContext);
@@ -132,7 +133,7 @@ namespace Components.ProceduralGeneration.BSP
         {
             ConnectRecursive(_runtimeContext.RootNode);
         }
-
+        //récursivité
         private void ConnectRecursive(BSPNode node)
         {
             if (node == null || node.IsLeaf()) return;
@@ -152,7 +153,6 @@ namespace Components.ProceduralGeneration.BSP
         }
 
         //le spawn du player
-
         private void PlacePlayerRandom()
         {
             var target = _player;
@@ -164,7 +164,7 @@ namespace Components.ProceduralGeneration.BSP
 
             if (target == null)
             {
-                Debug.LogWarning("[BSP] Pas de player assigné ni de tag Player dans la scène skip");
+                Debug.LogWarning("[BSP] pas de player ni de go avec tag Player");
                 return;
             }
 
@@ -173,7 +173,7 @@ namespace Components.ProceduralGeneration.BSP
 
             if (!canUseRooms && !canUseCorridors)
             {
-                Debug.LogWarning("[BSP] Pas de place pour le player");
+                Debug.LogWarning("[BSP] pas de place pour le player");
                 return;
             }
 
@@ -264,7 +264,7 @@ namespace Components.ProceduralGeneration.BSP
                 }
             }
 
-            Debug.Log($"[BSP] Items spawned across all rooms");
+            Debug.Log($"[BSP] items spawned dans les rooms");
         }
     }
 }

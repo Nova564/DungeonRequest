@@ -22,8 +22,33 @@ MonoBehaviour:
   _generateWalls: 1
   _wallPrefab: {fileID: 8540881627955225178, guid: 991451dbfd3ba604b9009573a07b0ef3, type: 3}
   _player: {fileID: 0}
+  _itemSpawns:
+  - prefab: {fileID: 5133642032224658703, guid: 5074a6db05ef8454e83bfe299ace4b1d, type: 3}
+    maxTotal: 5
+    dropRate: 0.7
+    maxPerRoom: 2
+  - prefab: {fileID: 5133642032224658703, guid: 5074a6db05ef8454e83bfe299ace4b1d, type: 3}
+    maxTotal: 7
+    dropRate: 0.627
+    maxPerRoom: 1
+  - prefab: {fileID: 8235543716416661632, guid: 903767b03075dbe44a0b3be0624b8c23, type: 3}
+    maxTotal: 4
+    dropRate: 0.78
+    maxPerRoom: 1
+  - prefab: {fileID: 1978000190493946783, guid: 501672ccaf9a7d44185b3cea1e8c8fc2, type: 3}
+    maxTotal: 7
+    dropRate: 0.402
+    maxPerRoom: 1
+  - prefab: {fileID: 6470282797850365921, guid: c90192d354e924344b251d17b07560fa, type: 3}
+    maxTotal: 5
+    dropRate: 0.255
+    maxPerRoom: 2
+  - prefab: {fileID: 123435416433458099, guid: 622220209622e8346bf69b28ba67eaf5, type: 3}
+    maxTotal: 6
+    dropRate: 0.678
+    maxPerRoom: 1
   _useDebugCubes: 0
-  _showPivotDebug: 1
+  _showPivotDebug: 0
   _roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
   _corridorDebugColor: {r: 0.2, g: 0.6, b: 1, a: 0.6}
   _roomLeft: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}

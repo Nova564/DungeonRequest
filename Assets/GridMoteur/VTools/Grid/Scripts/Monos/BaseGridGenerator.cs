@@ -14,7 +14,7 @@ namespace VTools.Grid
         
         protected virtual void Start()
         {
-            GenerateGrid();
+            //GenerateGrid();
         }
         
         public virtual void GenerateGrid()

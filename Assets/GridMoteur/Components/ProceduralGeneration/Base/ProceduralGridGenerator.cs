@@ -37,5 +37,12 @@ namespace Components.ProceduralGeneration
 
             Debug.Log($"Generation {_generationMethod.name} completed in {(DateTime.Now - time).TotalSeconds: 0.00} seconds.");
         }
+        public int GetDefaultSeed() => _seed;
+
+        public void SetSeedAndGenerate(int seed)
+        {
+            _seed = seed;
+            GenerateGrid();
+        }
     }
 }
