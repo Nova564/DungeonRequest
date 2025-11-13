@@ -43,7 +43,7 @@ public class PlayerEquipment : MonoBehaviour
         currentWeaponStats = null;
         currentShieldStats = null;
     }
-
+    //
     public void DropObject(GameObject objectToDrop)
     {
         if (objectToDrop == null)

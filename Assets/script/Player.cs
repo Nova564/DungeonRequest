@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -24,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 originalScale;
     private Rigidbody2D rb;
     private Vector2 moveInput;
+    private float walkAnimTime = 0f; 
+
 
     private float lastSpeed = float.NaN;
 
@@ -63,9 +66,16 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isTouchingPlayer)
         {
-            if (!Input.anyKey)
+            if (moveInput.magnitude > 0.01f)
+            {
+                walkAnimTime += Time.deltaTime * speed;
+                float scaleY = originalScale.y + Mathf.Sin(walkAnimTime * 8f) * 0.08f;
+                transform.localScale = new Vector3(originalScale.x, scaleY, originalScale.z);
+            }
+            else
             {
                 IdleEffect();
+                walkAnimTime = 0f; 
             }
         }
         float bonus = equipment != null ? equipment.GetMoveSpeedBonus() : 0f;

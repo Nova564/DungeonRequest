@@ -3,8 +3,8 @@ using UnityEngine;
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Transform fill;
-    [SerializeField] private PlayerMovement player; 
-
+    [SerializeField] private PlayerMovement player;
+    
     void Update()
     {
         if (player != null && fill != null)
