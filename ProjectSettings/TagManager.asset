@@ -6,13 +6,14 @@ TagManager:
   tags:
   - loot
   - Enemy
+  - Wall
+  - Dagger
+  - Axe
+  - Shield
+  - PaladinShield
+  - Sword
+  - Hammer
   - lance
-  - hache
-  - epee
-  - bouclier paladin
-  - bouclier
-  - arme
-  - marteau
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - obstacle
   - Water
   - UI
-  - Armure
-  - Arme
+  - Armor
+  - Weapon
   - 
   - 
   - 

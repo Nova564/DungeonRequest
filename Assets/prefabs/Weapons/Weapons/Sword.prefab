@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4727082611557216187}
   m_Layer: 7
   m_Name: Sword
-  m_TagString: epee
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

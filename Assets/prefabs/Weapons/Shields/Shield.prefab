@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5575201504930824071}
   m_Layer: 6
   m_Name: Shield
-  m_TagString: bouclier paladin
+  m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

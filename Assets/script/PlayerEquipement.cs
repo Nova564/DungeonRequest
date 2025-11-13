@@ -1,85 +1,125 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class PlayerEquipement : MonoBehaviour
+public class PlayerEquipment : MonoBehaviour
 {
-    [Header("Références visuelles du joueur")]
-    public GameObject epee;
-    public GameObject hache;
-    public GameObject bouclier;
-    public GameObject bouclierPaladin;
-    public GameObject lance;
-    public GameObject marteau;
+    [Header("Player Visual References")]
+    public GameObject sword;
+    public GameObject axe;
+    public GameObject shield;
+    public GameObject paladinShield;
+    public GameObject spear;
+    public GameObject hammer;
+
+    public GameObject pickedObject;
+
+    public ItemStats currentWeaponStats;
+    public ItemStats currentShieldStats;
 
     void Awake()
     {
-        DesactiverTout();
+        DisableAll();
     }
 
-    private void DesactiverTout()
+    private void DisableAll()
     {
-        // Désactive toutes les armes et armures au début
-        if (epee != null) epee.SetActive(false);
-        if (hache != null) hache.SetActive(false);
-        if (bouclier != null) bouclier.SetActive(false);
-        if (bouclierPaladin != null) bouclierPaladin.SetActive(false);
-        if (lance != null) lance.SetActive(false);
-        if (marteau != null) marteau.SetActive(false);
+        if (sword != null) sword.SetActive(false);
+        if (axe != null) axe.SetActive(false);
+        if (shield != null) shield.SetActive(false);
+        if (paladinShield != null) paladinShield.SetActive(false);
+        if (spear != null) spear.SetActive(false);
+        if (hammer != null) hammer.SetActive(false);
+
+        currentWeaponStats = null;
+        currentShieldStats = null;
     }
 
-    public void ActiverObjet(GameObject objetRamasse)
+    public void DropObject()
     {
-        // Si l'objet ramassé est dans le layer "Arme" ou "Armure"
-        if (objetRamasse.layer == LayerMask.NameToLayer("Arme"))
+        Debug.Log($"Drop: {pickedObject.name}");
+        pickedObject.SetActive(true);
+        pickedObject.transform.position = transform.position;
+    }
+
+    public void PickUpObject(GameObject pickedUpObject)
+    {
+        pickedObject = pickedUpObject;
+        pickedObject.SetActive(false);
+        Debug.Log($"Pick up: {pickedObject.name}");
+
+        ItemStats itemStats = null;
+        var pickup = pickedUpObject.GetComponent<ItemPickup>();
+        if (pickup != null)
+            itemStats = pickup.stats;
+
+        if (pickedUpObject.layer == LayerMask.NameToLayer("Weapon"))
         {
-            // Désactive toutes les armes
-            DesactiverArmes();
+            DisableWeapons();
 
-            // Vérifie le tag pour activer le bon sprite d'arme
-            switch (objetRamasse.tag)
+            switch (pickedUpObject.tag)
             {
-                case "epee":
-                    if (epee != null) epee.SetActive(true);  // Active l'épée
+                case "Sword":
+                    if (sword != null) sword.SetActive(true);
                     break;
-                case "hache":
-                    if (hache != null) hache.SetActive(true); // Active la hache
+                case "Axe":
+                    if (axe != null) axe.SetActive(true);
                     break;
-                case "lance":
-                    if (lance != null) lance.SetActive(true); // Active la lance
+                case "Dagger":
+                    if (spear != null) spear.SetActive(true);
                     break;
-                case "marteau":
-                    if (marteau != null) marteau.SetActive(true); // Active la lance
+                case "Hammer":
+                    if (hammer != null) hammer.SetActive(true);
                     break;
             }
-        }
-        else if (objetRamasse.layer == LayerMask.NameToLayer("Armure"))
-        {
-            // Désactive toutes les armures
-            DesactiverArmures();
 
-            // Vérifie le tag pour activer le bon sprite de bouclier
-            switch (objetRamasse.tag)
+            currentWeaponStats = itemStats;
+        }
+        else if (pickedUpObject.layer == LayerMask.NameToLayer("Armor"))
+        {
+            DisableArmors();
+
+            switch (pickedUpObject.tag)
             {
-                case "bouclier":
-                    if (bouclier != null) bouclier.SetActive(true);  // Active le bouclier
+                case "Shield":
+                    if (shield != null) shield.SetActive(true);
                     break;
-                case "bouclier paladin":
-                    bouclierPaladin.SetActive(true);  // Active le bouclier paladin
+                case "PaladinShield":
+                    paladinShield.SetActive(true);
                     break;
             }
+
+            currentShieldStats = itemStats;
         }
     }
 
-    private void DesactiverArmes()
+    private void DisableWeapons()
     {
-        if (epee != null) epee.SetActive(false);
-        if (hache != null) hache.SetActive(false);
-        if (lance != null) lance.SetActive(false);
-        if (marteau != null) marteau.SetActive(false);
+        if (sword != null) sword.SetActive(false);
+        if (axe != null) axe.SetActive(false);
+        if (spear != null) spear.SetActive(false);
+        if (hammer != null) hammer.SetActive(false);
+
+        currentWeaponStats = null;
     }
 
-    private void DesactiverArmures()
+    private void DisableArmors()
     {
-        if (bouclier != null) bouclier.SetActive(false);
-        if (bouclierPaladin != null) bouclierPaladin.SetActive(false);
+        if (shield != null) shield.SetActive(false);
+        if (paladinShield != null) paladinShield.SetActive(false);
+
+        currentShieldStats = null;
+    }
+
+    public float GetAttackRate()
+    {
+        return currentWeaponStats != null ? currentWeaponStats.attackRate : 1f;
+    }
+
+    public float GetMoveSpeedBonus()
+    {
+        float bonus = 0f;
+        if (currentWeaponStats != null) bonus += currentWeaponStats.moveSpeedBonus;
+        if (currentShieldStats != null) bonus += currentShieldStats.moveSpeedBonus;
+        return bonus;
     }
 }

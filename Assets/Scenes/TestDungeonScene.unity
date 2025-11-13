@@ -478,7 +478,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.8288803, y: -1.3990288}
+  m_Offset: {x: -0.010570526, y: -0.001914978}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -488,7 +488,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.76013184, y: 0.66786194}
+  m_Size: {x: 1.1593094, y: 1.0271225}
   m_EdgeRadius: 0
 --- !u!114 &640035282
 MonoBehaviour:
@@ -508,6 +508,27 @@ MonoBehaviour:
   bouclierPaladin: {fileID: 943295070}
   lance: {fileID: 1582249189}
   marteau: {fileID: 101269838}
+  currentWeaponStats: {fileID: 0}
+  currentShieldStats: {fileID: 0}
+--- !u!114 &640035283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640035276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd70a96ff253eb4fb5e41971551b079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equipement: {fileID: 640035282}
+  attackDuration: 5
+  hitboxSize: {x: 1, y: 1}
+  hittableLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  baseMoveSpeed: 5
 --- !u!1 &754132708 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9117647912140557008, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
@@ -1256,12 +1277,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shield
       objectReference: {fileID: 0}
+    - target: {fileID: 279054184529509547, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 279054184529509547, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
+      value: Shield
+      objectReference: {fileID: 0}
     - target: {fileID: 1010347005361066051, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       propertyPath: m_SortingOrder
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1485602733104925872, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       propertyPath: m_Name
+      value: Hammer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1485602733104925872, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1485602733104925872, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
       value: Hammer
       objectReference: {fileID: 0}
     - target: {fileID: 1554274052083000496, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
@@ -1328,8 +1365,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: Axe
       objectReference: {fileID: 0}
+    - target: {fileID: 4402434850440786946, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402434850440786946, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
+      value: Axe
+      objectReference: {fileID: 0}
     - target: {fileID: 4619599374002591559, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       propertyPath: m_Name
+      value: PaladinShield
+      objectReference: {fileID: 0}
+    - target: {fileID: 4619599374002591559, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4619599374002591559, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
       value: PaladinShield
       objectReference: {fileID: 0}
     - target: {fileID: 4699939577612940825, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
@@ -1356,6 +1409,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dagger
       objectReference: {fileID: 0}
+    - target: {fileID: 7171869939828634488, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7171869939828634488, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
+      value: Dagger
+      objectReference: {fileID: 0}
     - target: {fileID: 8508048932398599630, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       propertyPath: m_Name
       value: barbare
@@ -1372,6 +1433,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sword
       objectReference: {fileID: 0}
+    - target: {fileID: 9117647912140557008, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9117647912140557008, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      propertyPath: m_TagString
+      value: Sword
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1385,6 +1454,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8508048932398599630, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 640035278}
+    - targetCorrespondingSourceObject: {fileID: 8508048932398599630, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 640035283}
     - targetCorrespondingSourceObject: {fileID: 8508048932398599630, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 640035282}

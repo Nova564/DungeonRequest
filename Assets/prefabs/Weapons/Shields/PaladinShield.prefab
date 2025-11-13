@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 7254421525999815893}
   - component: {fileID: 4208284976443210366}
   m_Layer: 6
-  m_Name: RoundShield
-  m_TagString: bouclier
+  m_Name: PaladinShield
+  m_TagString: PaladinShield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
