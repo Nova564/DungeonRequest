@@ -11,15 +11,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
     [SerializeField] public float detectionRadius;
-    [SerializeField] LayerMask obstacleMask; // Should NOT include "Player"
+    [SerializeField] LayerMask obstacleMask; 
 
     [Header("Combat")]
     [SerializeField] private float maxHealth = 20f;
     [SerializeField] private float knockbackDuration = 0.12f;
     [SerializeField] private float flashDuration = 0.08f;
-    [SerializeField] private float contactDamage = 4f;           // damage per attack
-    [SerializeField] private float attackCooldown = 0.75f;       // seconds between attacks
-    [SerializeField] private float attackRange = 0.25f;          // stop distance to avoid touching
+    [SerializeField] private float contactDamage = 4f;           
+    [SerializeField] private float attackCooldown = 0.75f;      
+    [SerializeField] private float attackRange = 0.25f;          
 
     private float currentHealth;
     private bool isKnockedBack = false;
@@ -31,7 +31,6 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D col;
 
-    // Desired movement direction, applied in FixedUpdate
     private Vector2 desiredMoveDir = Vector2.zero;
 
     void Start()
