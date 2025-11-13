@@ -8,11 +8,15 @@ public class PlayerEquipment : MonoBehaviour
     public GameObject axe;
     public GameObject shield;
     public GameObject paladinShield;
-    public GameObject spear;
+    public GameObject dagger;
     public GameObject hammer;
 
+    [Header("Picked Objects")]
     public GameObject pickedObject;
+    public GameObject pickedWeapon;
+    public GameObject pickedArmor;
 
+    [Header("Item Stats")]
     public ItemStats currentWeaponStats;
     public ItemStats currentShieldStats;
 
@@ -23,22 +27,44 @@ public class PlayerEquipment : MonoBehaviour
 
     private void DisableAll()
     {
-        if (sword != null) sword.SetActive(false);
-        if (axe != null) axe.SetActive(false);
-        if (shield != null) shield.SetActive(false);
-        if (paladinShield != null) paladinShield.SetActive(false);
-        if (spear != null) spear.SetActive(false);
-        if (hammer != null) hammer.SetActive(false);
+        if (sword != null)
+            sword.SetActive(false);
+        if (axe != null)
+            axe.SetActive(false);
+        if (shield != null)
+            shield.SetActive(false);
+        if (paladinShield != null)
+            paladinShield.SetActive(false);
+        if (dagger != null)
+            dagger.SetActive(false);
+        if (hammer != null)
+            hammer.SetActive(false);
 
         currentWeaponStats = null;
         currentShieldStats = null;
     }
 
-    public void DropObject()
+    public void DropObject(GameObject objectToDrop)
     {
-        Debug.Log($"Drop: {pickedObject.name}");
-        pickedObject.SetActive(true);
-        pickedObject.transform.position = transform.position;
+        if (objectToDrop == null)
+            return;
+
+        Debug.Log($"Drop: {objectToDrop.name}");
+        objectToDrop.SetActive(true);
+        objectToDrop.transform.position = transform.position;
+
+        if (pickedWeapon != null && objectToDrop == pickedWeapon)
+        {
+            pickedWeapon = null;
+            currentWeaponStats = null;
+            DisableWeapons();
+        }
+        else if (pickedArmor != null && objectToDrop == pickedArmor)
+        {
+            pickedArmor = null;
+            currentShieldStats = null;
+            DisableArmors();
+        }
     }
 
     public void PickUpObject(GameObject pickedUpObject)
@@ -52,6 +78,15 @@ public class PlayerEquipment : MonoBehaviour
         if (pickup != null)
             itemStats = pickup.stats;
 
+        if (itemStats != null)
+        {
+            Debug.Log($"ItemStats récupéré : tag={itemStats.itemTag}, category={itemStats.category}, attack={itemStats.attack}, defense={itemStats.defense}, moveSpeedBonus={itemStats.moveSpeedBonus}, attackRate={itemStats.attackRate}");
+        }
+        else
+        {
+            Debug.LogWarning("Aucun ItemStats trouvé sur l'objet ramassé !");
+        }
+
         if (pickedUpObject.layer == LayerMask.NameToLayer("Weapon"))
         {
             DisableWeapons();
@@ -59,20 +94,25 @@ public class PlayerEquipment : MonoBehaviour
             switch (pickedUpObject.tag)
             {
                 case "Sword":
-                    if (sword != null) sword.SetActive(true);
+                    if (sword != null)
+                        sword.SetActive(true);
                     break;
                 case "Axe":
-                    if (axe != null) axe.SetActive(true);
+                    if (axe != null)
+                        axe.SetActive(true);
                     break;
                 case "Dagger":
-                    if (spear != null) spear.SetActive(true);
+                    if (dagger != null)
+                        dagger.SetActive(true);
                     break;
                 case "Hammer":
-                    if (hammer != null) hammer.SetActive(true);
+                    if (hammer != null)
+                        hammer.SetActive(true);
                     break;
             }
 
             currentWeaponStats = itemStats;
+            Debug.Log($"currentWeaponStats mis à jour : {currentWeaponStats?.itemTag}, moveSpeedBonus={currentWeaponStats?.moveSpeedBonus}");
         }
         else if (pickedUpObject.layer == LayerMask.NameToLayer("Armor"))
         {
@@ -81,31 +121,40 @@ public class PlayerEquipment : MonoBehaviour
             switch (pickedUpObject.tag)
             {
                 case "Shield":
-                    if (shield != null) shield.SetActive(true);
+                    if (shield != null)
+                        shield.SetActive(true);
                     break;
                 case "PaladinShield":
-                    paladinShield.SetActive(true);
+                    if (paladinShield != null)
+                        paladinShield.SetActive(true);
                     break;
             }
 
             currentShieldStats = itemStats;
+            Debug.Log($"currentShieldStats mis à jour : {currentShieldStats?.itemTag}, moveSpeedBonus={currentShieldStats?.moveSpeedBonus}");
         }
     }
 
     private void DisableWeapons()
     {
-        if (sword != null) sword.SetActive(false);
-        if (axe != null) axe.SetActive(false);
-        if (spear != null) spear.SetActive(false);
-        if (hammer != null) hammer.SetActive(false);
+        if (sword != null)
+            sword.SetActive(false);
+        if (axe != null)
+            axe.SetActive(false);
+        if (dagger != null)
+            dagger.SetActive(false);
+        if (hammer != null)
+            hammer.SetActive(false);
 
         currentWeaponStats = null;
     }
 
     private void DisableArmors()
     {
-        if (shield != null) shield.SetActive(false);
-        if (paladinShield != null) paladinShield.SetActive(false);
+        if (shield != null)
+            shield.SetActive(false);
+        if (paladinShield != null)
+            paladinShield.SetActive(false);
 
         currentShieldStats = null;
     }
@@ -118,8 +167,10 @@ public class PlayerEquipment : MonoBehaviour
     public float GetMoveSpeedBonus()
     {
         float bonus = 0f;
-        if (currentWeaponStats != null) bonus += currentWeaponStats.moveSpeedBonus;
-        if (currentShieldStats != null) bonus += currentShieldStats.moveSpeedBonus;
+        if (currentWeaponStats != null)
+            bonus += currentWeaponStats.moveSpeedBonus;
+        if (currentShieldStats != null)
+            bonus += currentShieldStats.moveSpeedBonus;
         return bonus;
     }
 }

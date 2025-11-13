@@ -5,20 +5,27 @@ public class PlayerMovement : MonoBehaviour
 {
     EventLoot loot;
 
-    [SerializeField] float speed = 5f;
+    [SerializeField] float speed = 5f; 
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
+
+    [SerializeField] private PlayerEquipment equipment; 
+
     private bool isTouchingPlayer = false;
     private Vector3 originalScale;
     private Rigidbody2D rb;
+    private Vector2 moveInput;
 
-    private Vector2 moveInput; // Ajout
+    private float lastSpeed = float.NaN; 
 
     private void Start()
     {
         originalScale = transform.localScale;
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
+
+        if (equipment == null)
+            equipment = GetComponent<PlayerEquipment>();
     }
 
     void Update()
@@ -41,13 +48,22 @@ public class PlayerMovement : MonoBehaviour
                 IdleEffect();
             }
         }
+        float bonus = equipment != null ? equipment.GetMoveSpeedBonus() : 0f;
+        float currentSpeed = Mathf.Max(0f, speed + bonus);
+        if (Mathf.Abs(currentSpeed - lastSpeed) > 0.01f)
+        {
+            Debug.Log($"[PlayerMovement] Speed update base={speed}, bonus={bonus}, current={currentSpeed}");
+            lastSpeed = currentSpeed;
+        }
     }
 
     void FixedUpdate()
     {
         if (moveInput != Vector2.zero)
         {
-            rb.MovePosition(rb.position + moveInput * speed * Time.fixedDeltaTime);
+            float bonus = equipment != null ? equipment.GetMoveSpeedBonus() : 0f;
+            float currentSpeed = Mathf.Max(0f, speed + bonus);
+            rb.MovePosition(rb.position + moveInput * currentSpeed * Time.fixedDeltaTime);
         }
     }
 

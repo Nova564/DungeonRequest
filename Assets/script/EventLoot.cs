@@ -15,7 +15,6 @@ public class EventLoot : MonoBehaviour
     {
         HandleHighlight();
 
-
         if (isPlayerNear && Input.GetKeyDown(KeyCode.Space))
         {
             TryPickup();
@@ -61,23 +60,35 @@ public class EventLoot : MonoBehaviour
         if (playerRef == null)
             return;
 
-        if (gameObject.layer == LayerMask.NameToLayer("Arme") || gameObject.layer == LayerMask.NameToLayer("Armure"))
+        PlayerEquipment equipment = playerRef.GetComponent<PlayerEquipment>();
+
+        if (equipment == null)
+            return;
+
+        int itemLayer = gameObject.layer;
+        GameObject pickedObject = gameObject;
+
+        if (itemLayer == LayerMask.NameToLayer("Weapon"))
         {
-            PlayerEquipment equipment = playerRef.GetComponent<PlayerEquipment>();
-
-            if (equipment == null)
+            if (equipment.pickedWeapon != null)
             {
-                return;
+                equipment.DropObject(equipment.pickedWeapon);
             }
 
-            if (equipment.pickedObject != null && gameObject.layer == playerRef.layer)
-            {
-                equipment.DropObject();
-            }
-
-            equipment.PickUpObject(gameObject);
-
+            equipment.PickUpObject(pickedObject);
             isPlayerNear = false;
+            equipment.pickedWeapon = equipment.pickedObject;
+        }
+        else if (itemLayer == LayerMask.NameToLayer("Armor"))
+        {
+            if (equipment.pickedArmor != null)
+            {
+                equipment.DropObject(equipment.pickedArmor);
+            }
+
+            equipment.PickUpObject(pickedObject);
+            isPlayerNear = false;
+            equipment.pickedArmor = equipment.pickedObject;
         }
     }
 }

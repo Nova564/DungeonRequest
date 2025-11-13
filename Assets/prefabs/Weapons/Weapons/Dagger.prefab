@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 128396932405676551}
   - component: {fileID: 8574052355131719333}
   - component: {fileID: 5904270096667401237}
+  - component: {fileID: -6042683555444932246}
   m_Layer: 7
   m_Name: Dagger
   m_TagString: Dagger
@@ -175,3 +176,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.625, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-6042683555444932246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 507327042411836140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68c9d2bf326ec3f448e9c438a1619390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 11400000, guid: d4a1ad3e819be4347b52346ad8d2b1f6, type: 2}
