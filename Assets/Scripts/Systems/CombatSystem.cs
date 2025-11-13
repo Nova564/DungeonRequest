@@ -24,6 +24,10 @@ public class CombatSystem : MonoBehaviour
     [Tooltip("Base movespeed du joueur")]
     [SerializeField] private float baseMoveSpeed = 5f;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private string attackTriggerName = "playerAttack";
+
     private float nextAttackAllowedTime = 0f;
     private Transform hitboxTransform;
     private BoxCollider2D hitboxCollider;
@@ -43,6 +47,9 @@ public class CombatSystem : MonoBehaviour
         if (equipment == null)
             equipment = GetComponent<PlayerEquipment>();
 
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
         EnsureHitbox();
     }
 
@@ -59,7 +66,7 @@ public class CombatSystem : MonoBehaviour
     private void TryAttack()
     {
         float rawAttackRate = equipment != null ? equipment.GetAttackRate() : 1f;
-        float cooldown = Mathf.Max(0.01f, rawAttackRate); 
+        float cooldown = Mathf.Max(0.01f, rawAttackRate);
 
         if (Time.time < nextAttackAllowedTime)
             return;
@@ -75,8 +82,19 @@ public class CombatSystem : MonoBehaviour
             Debug.Log($"attack animation (no weapon equipped) (cooldown={cooldown:0.###}s)");
         }
 
+        TriggerAttackAnimation();
+
         StopAllCoroutines();
         StartCoroutine(PerformAttackCoroutine());
+    }
+
+    private void TriggerAttackAnimation()
+    {
+        if (animator == null || string.IsNullOrEmpty(attackTriggerName))
+            return;
+
+        animator.ResetTrigger(attackTriggerName);
+        animator.SetTrigger(attackTriggerName);
     }
 
     private IEnumerator PerformAttackCoroutine()
