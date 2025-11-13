@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 4807775697852972887, guid: 4442fca1ebbcfd946819fb734f21b694, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -183,3 +183,9 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 8
+  maxHealth: 20
+  knockbackDuration: 0.12
+  flashDuration: 0.08
+  contactDamage: 4
+  attackCooldown: 3
+  attackRange: 0.25

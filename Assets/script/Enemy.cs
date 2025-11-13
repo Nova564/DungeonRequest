@@ -35,6 +35,12 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        //petite sécurité 
+        if (Player == null)
+        {
+            var go = GameObject.FindGameObjectWithTag("Player");
+            if (go != null) Player = go;
+        }
         if (obstacleMask == 0)
             obstacleMask = LayerMask.GetMask("Wall", "Obstacle");
 

@@ -35,6 +35,18 @@ namespace Components.ProceduralGeneration.BSP
         [Header("Item Spawning")]
         [SerializeField] private List<ItemSpawnConfig> _itemSpawns = new();
 
+        [Header("Enemy Spawning")]
+        [SerializeField, Tooltip("Prefab de l'ennemi (doit contenir le script Enemy)")]
+        private GameObject _enemyPrefab;
+        [SerializeField, Tooltip("Nombre total d'ennemis à faire apparaître")]
+        private int _enemyCount = 8;
+        [SerializeField, Tooltip("Distance minimale entre un ennemi et le joueur au spawn")]
+        private float _enemyMinDistanceFromPlayer = 4f;
+        [SerializeField, Tooltip("Distance minimale entre deux ennemis au spawn")]
+        private float _enemyMinSeparation = 1.25f;
+        [SerializeField, Tooltip("Nombre d'essais max pour trouver une position de spawn valide par ennemi")]
+        private int _enemyMaxSpawnAttemptsPerEnemy = 20;
+
         [Header("Debug")]
         [SerializeField] private bool _useDebugCubes = true;
         [SerializeField] private bool _showPivotDebug = false;
@@ -95,6 +107,8 @@ namespace Components.ProceduralGeneration.BSP
             }
 
             PlacePlayerRandom();
+
+            SpawnEnemiesRandom();
 
             Debug.Log($"[BSP Prefab Dongeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
         }
@@ -222,6 +236,42 @@ namespace Components.ProceduralGeneration.BSP
             world.y += Grid.OriginPosition.y;
             return world;
         }
+
+        private Vector3 GetRandomRoomPointWorld()
+        {
+            int idx = RandomService.Range(0, _runtimeContext.Rooms.Count);
+            var room = _runtimeContext.Rooms[idx];
+            var roomRect = room.bounds;
+
+            float dungeonX = RandomService.Range(roomRect.xMin + 0.5f, roomRect.xMax - 0.5f);
+            float dungeonY = RandomService.Range(roomRect.yMin + 0.5f, roomRect.yMax - 0.5f);
+
+            return new Vector3(
+                dungeonX + Grid.OriginPosition.x,
+                dungeonY + Grid.OriginPosition.y,
+                0f
+            );
+        }
+
+        private Vector3 GetRandomCorridorPointWorld()
+        {
+            int idx = RandomService.Range(0, _runtimeContext.CorridorGrid.Count);
+            int i = 0;
+            Vector2Int cellPos = default;
+            foreach (var kv in _runtimeContext.CorridorGrid)
+            {
+                if (i == idx) { cellPos = kv.Key; break; }
+                i++;
+            }
+
+            var world = DungeonGridUtility.CorridorCellToWorld(cellPos, _corridorSize);
+            // eviter l'overlap avec un jitter
+            float jitter = Mathf.Clamp(_corridorSize * 0.25f, 0.05f, 0.5f);
+            world.x += Grid.OriginPosition.x + RandomService.Range(-jitter, jitter);
+            world.y += Grid.OriginPosition.y + RandomService.Range(-jitter, jitter);
+            return world;
+        }
+
         //drop items 
         private void SpawnItemsInRooms()
         {
@@ -266,6 +316,105 @@ namespace Components.ProceduralGeneration.BSP
 
             Debug.Log($"[BSP] items spawned dans les rooms");
         }
+//enemy spawn
+        private void SpawnEnemiesRandom()
+        {
+            if (_enemyPrefab == null)
+            {
+                Debug.LogWarning("[BSP] Manque le prefab enemy");
+                return;
+            }
+            if (_enemyCount <= 0)
+            {
+                return;
+            }
+
+            bool canUseRooms = _runtimeContext.Rooms.Count > 0;
+            bool canUseCorridors = _runtimeContext.CorridorGrid.Count > 0;
+            if (!canUseRooms && !canUseCorridors)
+            {
+                Debug.LogWarning("[BSP] pas de place pour enemy spawn");
+                return;
+            }
+
+            // trouver composant player pour le chase de l'ennemi
+            GameObject playerGo = null;
+            if (_player != null) playerGo = _player.gameObject;
+            if (playerGo == null)
+            {
+                var go = GameObject.FindGameObjectWithTag("Player");
+                if (go != null) playerGo = go;
+            }
+
+            var spawnedPositions = new List<Vector3>(_enemyCount);
+            int spawned = 0;
+
+            for (int e = 0; e < _enemyCount; e++)
+            {
+                bool placed = false;
+
+                for (int attempt = 0; attempt < _enemyMaxSpawnAttemptsPerEnemy; attempt++)
+                {
+                    Vector3 spawnPos;
+
+                    if (canUseRooms && canUseCorridors)
+                    {
+                        bool pickRoom = RandomService.Range(0, 2) == 0;
+                        spawnPos = pickRoom ? GetRandomRoomPointWorld() : GetRandomCorridorPointWorld();
+                    }
+                    else if (canUseRooms)
+                    {
+                        spawnPos = GetRandomRoomPointWorld();
+                    }
+                    else
+                    {
+                        spawnPos = GetRandomCorridorPointWorld();
+                    }
+
+                    if (playerGo != null)
+                    {
+                        if (Vector3.Distance(spawnPos, playerGo.transform.position) < _enemyMinDistanceFromPlayer)
+                            continue;
+                    }
+
+                    // distance entre les enemies pour eviter l'overlap
+                    bool overlaps = false;
+                    foreach (var p in spawnedPositions)
+                    {
+                        if (Vector3.Distance(spawnPos, p) < _enemyMinSeparation)
+                        {
+                            overlaps = true;
+                            break;
+                        }
+                    }
+                    if (overlaps) continue;
+
+                    var go = Object.Instantiate(_enemyPrefab, spawnPos, Quaternion.identity, GridGenerator.transform);
+                    if (go.tag != "Enemy")
+                    {
+                        go.tag = "Enemy";
+                    }
+
+                    var enemy = go.GetComponent<Enemy>();
+                    if (enemy != null && playerGo != null)
+                    {
+                        enemy.Player = playerGo;
+                    }
+
+                    _runtimeContext.SpawnedObjects.Add(go);
+                    spawnedPositions.Add(spawnPos);
+                    spawned++;
+                    placed = true;
+                    break;
+                }
+
+                if (!placed)
+                {
+                    Debug.LogWarning("[BSP] pas de position valide trouvé pour Enemy");
+                }
+            }
+
+            Debug.Log($"[BSP] enemies spawned: {spawned}/{_enemyCount}");
+        }
     }
 }
-  

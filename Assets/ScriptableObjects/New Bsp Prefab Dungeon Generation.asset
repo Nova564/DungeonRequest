@@ -47,6 +47,11 @@ MonoBehaviour:
     maxTotal: 6
     dropRate: 0.678
     maxPerRoom: 1
+  _enemyPrefab: {fileID: 6093041654589100165, guid: ff62d5060b48876438c2ece09f7c77ad, type: 3}
+  _enemyCount: 8
+  _enemyMinDistanceFromPlayer: 4
+  _enemyMinSeparation: 1.25
+  _enemyMaxSpawnAttemptsPerEnemy: 20
   _useDebugCubes: 0
   _showPivotDebug: 0
   _roomDebugColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.6}
