@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
 
     private Vector2 desiredMoveDir = Vector2.zero;
 
-
+    //enable register pour les ennemies 
     private void OnEnable()
     {
         if (!_registered)
@@ -143,7 +143,7 @@ public class Enemy : MonoBehaviour
         {
             isFollowing = false;
         }
-
+        //roar son quand il follow
         if (!previousFollowing && isFollowing)
         {
             if (_audioSource != null && _followSound != null)
@@ -169,7 +169,7 @@ public class Enemy : MonoBehaviour
             desiredMoveDir = Vector2.zero;
             return;
         }
-
+        //knockback call
         var targetCol = Player.GetComponent<Collider2D>();
         Vector3 enemyCenter = (col != null) ? col.bounds.center : transform.position;
         Vector3 playerCenter = (targetCol != null) ? targetCol.bounds.center : Player.transform.position;
@@ -198,7 +198,7 @@ public class Enemy : MonoBehaviour
     }
 
     void TryAttack()
-    {
+    {   //cooldown logique ici
         if (Time.time < nextAttackTime) return;
 
         DealDamageToPlayer();
@@ -207,7 +207,7 @@ public class Enemy : MonoBehaviour
     }
 
     void DealDamageToPlayer()
-    {
+    {   
         if (Player == null) return;
 
         var player = Player.GetComponent<PlayerMovement>();
@@ -227,7 +227,7 @@ public class Enemy : MonoBehaviour
             _audioSource.clip = _hitSound;
             _audioSource.Play();
         }
-
+        //coroutines
         StopAllCoroutines();
         StartCoroutine(KnockbackCoroutine(dir, knockbackForce));
         StartCoroutine(FlashCoroutine());
@@ -263,7 +263,7 @@ public class Enemy : MonoBehaviour
         {
             Vector2 startPos = transform.position;
             Vector2 targetPos = startPos + direction * force * 0.05f;
-
+            //fluidité knockback
             while (elapsed < knockbackDuration)
             {
                 float t = elapsed / knockbackDuration;
@@ -276,7 +276,7 @@ public class Enemy : MonoBehaviour
 
         isKnockedBack = false;
     }
-
+    //indicateur dégats
     private IEnumerator FlashCoroutine()
     {
         if (spriteRenderer != null)

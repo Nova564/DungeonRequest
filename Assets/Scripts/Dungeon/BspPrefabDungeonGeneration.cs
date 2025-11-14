@@ -38,12 +38,13 @@ namespace Components.ProceduralGeneration.BSP
         [Header("Enemy Spawning")]
         [SerializeField, Tooltip("Prefab de l'ennemi (doit contenir le script Enemy)")]
         private GameObject _enemyPrefab;
-        [SerializeField, Tooltip("Nombre total d'ennemis à faire apparaître")]
+        [SerializeField, Tooltip("Nombre total d'ennemis qui peuvent apparaitre")]
         private int _enemyCount = 8;
         [SerializeField, Tooltip("Distance minimale entre un ennemi et le joueur au spawn")]
         private float _enemyMinDistanceFromPlayer = 4f;
-        [SerializeField, Tooltip("Distance minimale entre deux ennemis au spawn")]
+        [SerializeField, Tooltip("Distance minimale entre deux ennemis au spawn (eviter l'overlap)")]
         private float _enemyMinSeparation = 1.25f;
+        //sécurité
         [SerializeField, Tooltip("Nombre d'essais max pour trouver une position de spawn valide par ennemi")]
         private int _enemyMaxSpawnAttemptsPerEnemy = 20;
 
@@ -52,7 +53,9 @@ namespace Components.ProceduralGeneration.BSP
         [SerializeField] private bool _showPivotDebug = false;
         [SerializeField] private Color _roomDebugColor = new Color(0.2f, 0.9f, 0.2f, 0.6f);
         [SerializeField] private Color _corridorDebugColor = new Color(0.2f, 0.6f, 1f, 0.6f);
+        
 
+        //noms des variables avec très peu d'importance vu que les corridors/rooms n'ont plus de walls autour
         [Header("Room Prefabs")]
         [SerializeField] private GameObject _roomLeft;
         [SerializeField] private GameObject _roomRight;
@@ -92,26 +95,19 @@ namespace Components.ProceduralGeneration.BSP
             await UniTask.Yield(cancellationToken);
 
             _spawner.SpawnRooms();
-            Debug.Log("[BSP] SpawnRooms() fini");
             SpawnItemsInRooms();
 
             _spawner.SpawnCorridors();
-            Debug.Log("[BSP] SpawnCorridors() fini");
 
             if (_generateWalls)
             {
-                Debug.Log("[BSP] Walls GenerateWalls() commence");
                 _walls.GenerateWalls();
-                Debug.Log("[BSP] Walls GenerateWalls() termine");
-                Debug.Log("[BSP] Generation terminer");
             }
 
             PlacePlayerRandom();
 
             SpawnEnemiesRandom();
-
-            Debug.Log($"[BSP Prefab Dongeon] Rooms={_runtimeContext.Rooms.Count} Corridors={_runtimeContext.CorridorGrid.Count}");
-        }
+         }
 
         private void InitializeServices()
         {
@@ -179,7 +175,6 @@ namespace Components.ProceduralGeneration.BSP
 
             if (target == null)
             {
-                Debug.LogWarning("[BSP] pas de player ni de go avec tag Player");
                 return;
             }
 
@@ -188,7 +183,6 @@ namespace Components.ProceduralGeneration.BSP
 
             if (!canUseRooms && !canUseCorridors)
             {
-                Debug.LogWarning("[BSP] pas de place pour le player");
                 return;
             }
 
@@ -314,15 +308,12 @@ namespace Components.ProceduralGeneration.BSP
                         break;
                 }
             }
-
-            Debug.Log($"[BSP] items spawned dans les rooms");
         }
 //enemy spawn
         private void SpawnEnemiesRandom()
         {
             if (_enemyPrefab == null)
             {
-                Debug.LogWarning("[BSP] Manque le prefab enemy");
                 return;
             }
             if (_enemyCount <= 0)
@@ -411,11 +402,9 @@ namespace Components.ProceduralGeneration.BSP
 
                 if (!placed)
                 {
-                    Debug.LogWarning("[BSP] pas de position valide trouvé pour Enemy");
+                    Debug.LogWarning("[BSP] pas de position valide trouve pour Enemy");
                 }
             }
-
-            Debug.Log($"[BSP] enemies spawned: {spawned}/{_enemyCount}");
         }
     }
 }

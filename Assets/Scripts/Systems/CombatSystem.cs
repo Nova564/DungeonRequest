@@ -73,15 +73,6 @@ public class CombatSystem : MonoBehaviour
 
         nextAttackAllowedTime = Time.time + cooldown;
 
-        if (equipment != null && equipment.currentWeaponStats != null)
-        {
-            Debug.Log($"attack animation with {equipment.currentWeaponStats.itemTag} (cooldown={cooldown}s)");
-        }
-        else
-        {
-            Debug.Log($"attack animation (no weapon equipped) (cooldown={cooldown:0.###}s)");
-        }
-
         TriggerAttackAnimation();
 
         StopAllCoroutines();
@@ -94,7 +85,6 @@ public class CombatSystem : MonoBehaviour
             return;
 
         animator.ResetTrigger(attackTriggerName);
-        Debug.Log("Triggering attack animation");
         animator.SetTrigger(attackTriggerName);
     }
 
@@ -120,8 +110,6 @@ public class CombatSystem : MonoBehaviour
                 enemy.ApplyHit(worldCenter, damage, knockbackForce);
                 continue;
             }
-
-            Debug.Log("Hit: " + hits[i].name);
         }
 
         yield return new WaitForSeconds(attackDuration);

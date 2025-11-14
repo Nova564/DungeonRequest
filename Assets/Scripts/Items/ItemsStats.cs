@@ -10,7 +10,7 @@ public enum ItemCategory
 public class ItemStats : ScriptableObject
 {
     [Header("Identification")]
-    [Tooltip("Doit correspondre aux Tags (pr ex : 'Sword', 'Axe', 'Dagger', 'Hammer', 'Shield', 'PaladinShield')")]
+    [Tooltip("Doit correspondre aux diff Tags ('Sword', 'Axe', 'Dagger', 'Hammer', 'Shield', 'PaladinShield')")]
     public string itemTag;
 
     public ItemCategory category = ItemCategory.Weapon;
@@ -19,7 +19,7 @@ public class ItemStats : ScriptableObject
     [Tooltip("Damage added by the item")]
     public float attack = 0f;
 
-    [Tooltip("Pas encore implementé")]
+    [Tooltip("Pas encore implementé (aucune logique derriere")]
     public float defense = 0f;
 
     [Tooltip("Additive ou reductive movespeed du player")]

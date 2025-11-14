@@ -2,7 +2,7 @@ using UnityEngine;
 using VTools.Grid;
 
 namespace Components.ProceduralGeneration.BSP
-{
+{//ici aussi beaucoup de variables et initialisation obsolète comme les corridors/rooms n'ont plus de walls
     public class PrefabSpawnService
     {
         private readonly bool _useDebugCubes;
@@ -147,7 +147,6 @@ namespace Components.ProceduralGeneration.BSP
                 var type = tile.GetTileType();
                 Vector3 pos = DungeonGridUtility.CorridorCellToWorld(tile.cellPosition, _corridorSize);
 
-                // Offset by grid origin (XY)
                 if (_grid != null)
                 {
                     pos.x += _grid.OriginPosition.x;
@@ -194,7 +193,7 @@ namespace Components.ProceduralGeneration.BSP
                 CorridorTileType.CornerTopLeft => _corridorCornerTL,
                 _ => _corridorHorizontal
             };
-
+        //Debug
         private GameObject CreateDebugCube(Vector3 center, Vector3 scale, Color color, string name)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -214,7 +213,7 @@ namespace Components.ProceduralGeneration.BSP
 
             return go;
         }
-
+        
         private void CreatePivotSphere(GameObject parent)
         {
             var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);

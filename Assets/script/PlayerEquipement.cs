@@ -43,13 +43,11 @@ public class PlayerEquipment : MonoBehaviour
         currentWeaponStats = null;
         currentShieldStats = null;
     }
-    //
     public void DropObject(GameObject objectToDrop)
     {
         if (objectToDrop == null)
             return;
 
-        Debug.Log($"Drop: {objectToDrop.name}");
         objectToDrop.SetActive(true);
         objectToDrop.transform.position = transform.position;
 
@@ -71,21 +69,11 @@ public class PlayerEquipment : MonoBehaviour
     {
         pickedObject = pickedUpObject;
         pickedObject.SetActive(false);
-        Debug.Log($"Pick up: {pickedObject.name}");
 
         ItemStats itemStats = null;
         var pickup = pickedUpObject.GetComponent<ItemPickup>();
         if (pickup != null)
             itemStats = pickup.stats;
-
-        if (itemStats != null)
-        {
-            Debug.Log($"ItemStats récupéré : tag={itemStats.itemTag}, category={itemStats.category}, attack={itemStats.attack}, defense={itemStats.defense}, moveSpeedBonus={itemStats.moveSpeedBonus}, attackRate={itemStats.attackRate}");
-        }
-        else
-        {
-            Debug.LogWarning("Aucun ItemStats trouvé sur l'objet ramassé !");
-        }
 
         if (pickedUpObject.layer == LayerMask.NameToLayer("Weapon"))
         {
@@ -112,7 +100,6 @@ public class PlayerEquipment : MonoBehaviour
             }
 
             currentWeaponStats = itemStats;
-            Debug.Log($"currentWeaponStats mis à jour : {currentWeaponStats?.itemTag}, moveSpeedBonus={currentWeaponStats?.moveSpeedBonus}");
         }
         else if (pickedUpObject.layer == LayerMask.NameToLayer("Armor"))
         {
@@ -131,7 +118,6 @@ public class PlayerEquipment : MonoBehaviour
             }
 
             currentShieldStats = itemStats;
-            Debug.Log($"currentShieldStats mis à jour : {currentShieldStats?.itemTag}, moveSpeedBonus={currentShieldStats?.moveSpeedBonus}");
         }
     }
 

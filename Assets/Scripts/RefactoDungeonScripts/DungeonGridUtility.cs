@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Components.ProceduralGeneration.BSP
 {
+    //des fonctions obsolète depuis le rework qui enleve les walls des corridors
     public static class DungeonGridUtility
     {
         public static int SnapToGrid(int value, int gridSize) =>

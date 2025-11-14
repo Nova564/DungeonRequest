@@ -1,5 +1,5 @@
 using UnityEngine;
-
+//classe qui ne marche pas implémentation failed
 public class EnemyHealthBar : MonoBehaviour
 {
     public enum FollowMode

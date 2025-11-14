@@ -53,7 +53,7 @@ public class SceneTeleporter : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[SceneTeleporter] pas de nom de scène mis");
+            Debug.LogWarning("[SCENE TELEPORT] pas de nom de scène mis");
         }
     }
 }

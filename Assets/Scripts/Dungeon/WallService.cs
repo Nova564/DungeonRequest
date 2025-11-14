@@ -43,8 +43,6 @@ namespace Components.ProceduralGeneration.BSP
             CollectFloorCells();
             DetermineWallPositions();
             PlaceWalls();
-
-            Debug.Log($"[WallGeneration] Generated {_wallCells.Count} wall tiles");
         }
 
         private void CollectFloorCells()
@@ -145,7 +143,7 @@ namespace Components.ProceduralGeneration.BSP
         {
             if (_wallPrefab == null)
             {
-                Debug.LogWarning("[WallGeneration] Wall prefab pas assigné");
+                Debug.Log("[WALL SERVICE] Pas de wall prefab");
                 return;
             }
             var c = cell.Coordinates;

@@ -86,7 +86,6 @@ public class PlayerMovement : MonoBehaviour
         float currentSpeed = Mathf.Max(0f, speed + bonus);
         if (Mathf.Abs(currentSpeed - lastSpeed) > 0.01f)
         {
-            Debug.Log($"[PlayerMovement] Speed update base={speed}, bonus={bonus}, current={currentSpeed}");
             lastSpeed = currentSpeed;
         }
     }
