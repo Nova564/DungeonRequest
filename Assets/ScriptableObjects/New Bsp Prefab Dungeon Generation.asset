@@ -64,5 +64,5 @@ MonoBehaviour:
   _corridorVertical: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
   _corridorCornerBR: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
   _corridorCornerBL: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
-  _corridorCornerTR: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  _corridorCornerTR: {fileID: 379600244852675317, guid: e046dc9825c6c824d84dead985672443, type: 3}
   _corridorCornerTL: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
