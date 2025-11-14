@@ -1,6 +1,5 @@
 using Components.ProceduralGeneration;
 using Cysharp.Threading.Tasks;
-using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
