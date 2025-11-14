@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemTag: Dagger
   category: 0
-  attack: 1
+  attack: 5
   defense: 0
-  moveSpeedBonus: 50
-  attackRate: 0.3
+  moveSpeedBonus: 3
+  attackRate: 0.1

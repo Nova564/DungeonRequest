@@ -333,7 +333,7 @@ MonoBehaviour:
   _audioSource: {fileID: 3887579101946124504}
   _hitSound: {fileID: 8300000, guid: 7dff5db1b41a62846ab34aa6186ed3cc, type: 3}
   _followSound: {fileID: 8300000, guid: 73f10187d99e547438c71f621ce7a2b2, type: 3}
-  maxHealth: 20
+  maxHealth: 50
   knockbackDuration: 0.12
   flashDuration: 0.08
   contactDamage: 4

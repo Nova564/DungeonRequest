@@ -16,5 +16,5 @@ MonoBehaviour:
   category: 1
   attack: 0
   defense: 0
-  moveSpeedBonus: 0
+  moveSpeedBonus: 3
   attackRate: 1

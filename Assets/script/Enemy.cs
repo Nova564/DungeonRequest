@@ -35,9 +35,19 @@ public class Enemy : MonoBehaviour
     private Color originalColor;
     private Rigidbody2D rb;
     private Collider2D col;
+    private bool _registered;
 
     private Vector2 desiredMoveDir = Vector2.zero;
 
+
+    private void OnEnable()
+    {
+        if (!_registered)
+        {
+            EnemyTracker.Register();
+            _registered = true;
+        }
+    }
     void Start()
     {
         //petite sécurité 
@@ -286,7 +296,14 @@ public class Enemy : MonoBehaviour
         if (rb != null) rb.linearVelocity = Vector2.zero;
         Destroy(gameObject);
     }
-
+    private void OnDestroy()
+    {
+        if (_registered)
+        {
+            EnemyTracker.Unregister();
+            _registered = false;
+        }
+    }
     public float GetCurrentHealth()
     {
         return currentHealth;

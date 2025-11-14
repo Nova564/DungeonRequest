@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemTag: Sword
   category: 0
-  attack: 0
+  attack: 10
   defense: 0
-  moveSpeedBonus: -100
-  attackRate: 1
+  moveSpeedBonus: 0
+  attackRate: 0.2

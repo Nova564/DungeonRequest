@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemTag: Hammer
   category: 0
-  attack: 0
+  attack: 50
   defense: 0
-  moveSpeedBonus: -100
+  moveSpeedBonus: -4
   attackRate: 1
