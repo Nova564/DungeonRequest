@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Combat")]
     [SerializeField] private float maxHealth = 10f;
     [SerializeField] private float flashDuration = 0.08f;
+    [SerializeField] private float healPotionEffect = 3f;
     public bool isDead = false;
 
     private float currentHealth;
@@ -105,6 +106,11 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             isTouchingPlayer = true;
+        }
+        if (collision.gameObject.CompareTag("Heal"))
+        {
+            currentHealth = Mathf.Min(currentHealth + healPotionEffect, maxHealth);
+            Destroy(collision.gameObject); 
         }
     }
 

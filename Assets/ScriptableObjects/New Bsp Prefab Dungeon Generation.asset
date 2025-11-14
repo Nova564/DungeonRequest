@@ -47,6 +47,10 @@ MonoBehaviour:
     maxTotal: 6
     dropRate: 0.678
     maxPerRoom: 1
+  - prefab: {fileID: 278017144258038667, guid: af9d2cbfaab6e0540a5e15a64f956d60, type: 3}
+    maxTotal: 6
+    dropRate: 1
+    maxPerRoom: 1
   _enemyPrefab: {fileID: 6093041654589100165, guid: ff62d5060b48876438c2ece09f7c77ad, type: 3}
   _enemyCount: 50
   _enemyMinDistanceFromPlayer: 4

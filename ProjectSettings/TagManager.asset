@@ -13,7 +13,7 @@ TagManager:
   - PaladinShield
   - Sword
   - Hammer
-  - lance
+  - Heal
   layers:
   - Default
   - TransparentFX
