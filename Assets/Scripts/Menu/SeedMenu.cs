@@ -8,7 +8,10 @@ public class SeedMenu : MonoBehaviour
     [SerializeField] private TMP_InputField seedInputField;
     [SerializeField] private Button playButton;
     [SerializeField] private ProceduralGridGenerator gridGenerator;
-    [SerializeField] private GameObject menuPanel; 
+    [SerializeField] private GameObject menuPanel;
+
+    [Header("UI Gameplay")]
+    [SerializeField] private GameObject healthBar;
 
     private Vector3 originalScale;
 
@@ -16,6 +19,9 @@ public class SeedMenu : MonoBehaviour
     {
         originalScale = playButton.transform.localScale;
         playButton.onClick.AddListener(OnPlayClicked);
+
+        if (healthBar != null)
+            healthBar.SetActive(false);
 
         var eventTrigger = playButton.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
 
@@ -42,11 +48,15 @@ public class SeedMenu : MonoBehaviour
         {
             seed = inputSeed;
         }
+
         gridGenerator.SetSeedAndGenerate(seed);
+
+        if (healthBar != null)
+            healthBar.SetActive(true);
 
         if (menuPanel != null)
             menuPanel.SetActive(false);
         else
-            gameObject.SetActive(false); 
+            gameObject.SetActive(false);
     }
 }

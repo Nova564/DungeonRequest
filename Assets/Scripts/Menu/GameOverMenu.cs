@@ -6,7 +6,8 @@ public class GameOverMenu : MonoBehaviour
 {
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private Button tryAgainButton;
-
+    [Header("Healthbar ref")]
+    [SerializeField] private GameObject healthBar;
     private void Awake()
     {
         gameOverPanel.SetActive(false);
@@ -15,6 +16,7 @@ public class GameOverMenu : MonoBehaviour
 
     public void ShowGameOver()
     {
+        healthBar.SetActive(false);
         gameOverPanel.SetActive(true);
     }
 
