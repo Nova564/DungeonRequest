@@ -6,12 +6,17 @@ public class Enemy : MonoBehaviour
     public GameObject Player;
     private bool isFollowing = false;
     private bool isTouchingPlayer = false;
+    private bool wasFollowing = false;
 
     [SerializeField] float speed;
     [SerializeField] float idleScaleSpeed;
     [SerializeField] float idleScaleAmount;
     [SerializeField] public float detectionRadius;
     [SerializeField] LayerMask obstacleMask;
+    [Header("Audio")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _hitSound;
+    [SerializeField] private AudioClip _followSound;
 
     [Header("Combat")]
     [SerializeField] private float maxHealth = 20f;
@@ -112,10 +117,12 @@ public class Enemy : MonoBehaviour
 
     void DetectPlayer()
     {
-        if (Player == null) { isFollowing = false; return; }
+        if (Player == null) { isFollowing = false; wasFollowing = false; return; }
 
         Vector2 direction = (Player.transform.position - transform.position).normalized;
         float distance = Vector2.Distance(transform.position, Player.transform.position);
+
+        bool previousFollowing = isFollowing;
 
         if (distance <= detectionRadius)
         {
@@ -126,6 +133,18 @@ public class Enemy : MonoBehaviour
         {
             isFollowing = false;
         }
+
+        if (!previousFollowing && isFollowing)
+        {
+            if (_audioSource != null && _followSound != null)
+            {
+                _audioSource.Stop();
+                _audioSource.clip = _followSound;
+                _audioSource.Play();
+            }
+        }
+
+        wasFollowing = isFollowing;
     }
 
     void UpdateChaseAndAttack()
@@ -191,6 +210,13 @@ public class Enemy : MonoBehaviour
     public void ApplyHit(Vector2 hitOrigin, float damage, float knockbackForce)
     {
         Vector2 dir = ((Vector2)transform.position - hitOrigin).normalized;
+
+        if (_audioSource != null && _hitSound != null)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _hitSound;
+            _audioSource.Play();
+        }
 
         StopAllCoroutines();
         StartCoroutine(KnockbackCoroutine(dir, knockbackForce));

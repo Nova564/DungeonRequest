@@ -13,6 +13,11 @@ public class SeedMenu : MonoBehaviour
     [Header("UI Gameplay")]
     [SerializeField] private GameObject healthBar;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _menuMusic;
+    [SerializeField] private AudioClip _gameplayMusic;
+
     private Vector3 originalScale;
 
     void Start()
@@ -39,6 +44,8 @@ public class SeedMenu : MonoBehaviour
 
         eventTrigger.triggers.Add(pointerEnter);
         eventTrigger.triggers.Add(pointerExit);
+
+        PlayMenuMusic();
     }
 
     private void OnPlayClicked()
@@ -58,5 +65,38 @@ public class SeedMenu : MonoBehaviour
             menuPanel.SetActive(false);
         else
             gameObject.SetActive(false);
+
+        StopMenuMusic();
+        PlayGameplayMusic();
+    }
+
+    private void PlayMenuMusic()
+    {
+        if (_audioSource != null && _menuMusic != null)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _menuMusic;
+            _audioSource.loop = true;
+            _audioSource.Play();
+        }
+    }
+
+    private void StopMenuMusic()
+    {
+        if (_audioSource != null && _audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+        }
+    }
+
+    private void PlayGameplayMusic()
+    {
+        if (_audioSource != null && _gameplayMusic != null)
+        {
+            _audioSource.clip = _gameplayMusic;
+            _audioSource.loop = true;
+            _audioSource.volume = 0.3f;
+            _audioSource.Play();
+        }
     }
 }

@@ -12,6 +12,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private PlayerEquipment equipment;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _hitSound;
+
     [Header("Combat")]
     [SerializeField] private float maxHealth = 10f;
     [SerializeField] private float flashDuration = 0.08f;
@@ -123,6 +127,14 @@ public class PlayerMovement : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= Mathf.Max(0f, damage);
+
+        if (_audioSource != null && _hitSound != null)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _hitSound;
+            _audioSource.Play();
+        }
+
         StartCoroutine(FlashCoroutine());
 
         if (currentHealth <= 0f)
