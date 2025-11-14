@@ -544,7 +544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equipment: {fileID: 640035282}
   attackDuration: 0.1
-  hitboxSize: {x: 3, y: 4}
+  hitboxSize: {x: 6, y: 6}
   hittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295

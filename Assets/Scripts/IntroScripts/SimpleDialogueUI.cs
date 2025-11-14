@@ -7,7 +7,11 @@ public class SimpleDialogueUI : MonoBehaviour
 
     [SerializeField] private GameObject _dialoguePanel;
     [SerializeField] private TextMeshProUGUI _dialogueText;
-    [SerializeField] private TextMeshProUGUI _continueHint; 
+    [SerializeField] private TextMeshProUGUI _continueHint;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _dialogueSound;
 
     private string[] _currentLines;
     private int _currentLineIndex;
@@ -27,6 +31,10 @@ public class SimpleDialogueUI : MonoBehaviour
     {
         if (_isDialogueActive && Input.GetKeyDown(KeyCode.E))
         {
+            if (_currentLineIndex < _currentLines.Length - 1)
+            {
+                PlayDialogueSound();
+            }
             ShowNextLine();
         }
     }
@@ -38,6 +46,7 @@ public class SimpleDialogueUI : MonoBehaviour
         _isDialogueActive = true;
         _dialoguePanel.SetActive(true);
 
+        PlayDialogueSound();
         ShowCurrentLine();
     }
 
@@ -70,7 +79,21 @@ public class SimpleDialogueUI : MonoBehaviour
         _dialoguePanel.SetActive(false);
         _currentLines = null;
         _currentLineIndex = 0;
-    }
 
+        if (_audioSource != null && _audioSource.isPlaying)
+            _audioSource.Stop();
+    }
     public bool IsDialogueActive() => _isDialogueActive;
+
+    private void PlayDialogueSound()
+    {
+        if (_audioSource != null && _dialogueSound != null)
+        {
+            if (_audioSource.isPlaying)
+                _audioSource.Stop();
+
+            _audioSource.clip = _dialogueSound;
+            _audioSource.Play();
+        }
+    }
 }
