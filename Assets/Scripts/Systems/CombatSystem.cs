@@ -17,12 +17,12 @@ public class CombatSystem : MonoBehaviour
     [SerializeField] private LayerMask hittableLayers;
 
     [Header("Damage/Knockback")]
-    [SerializeField] private float defaultDamage = 1f;
-    [SerializeField] private float knockbackForce = 8f;
+    [SerializeField] public float defaultDamage = 1f;
+    [SerializeField] public float knockbackForce = 8f;
 
     [Header("Move Speed")]
     [Tooltip("Base movespeed du joueur")]
-    [SerializeField] private float baseMoveSpeed = 5f;
+    [SerializeField] public float baseMoveSpeed = 5f;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;

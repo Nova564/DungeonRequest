@@ -24,35 +24,35 @@ MonoBehaviour:
   _player: {fileID: 0}
   _itemSpawns:
   - prefab: {fileID: 5133642032224658703, guid: 5074a6db05ef8454e83bfe299ace4b1d, type: 3}
-    maxTotal: 5
-    dropRate: 0.7
-    maxPerRoom: 2
-  - prefab: {fileID: 5133642032224658703, guid: 5074a6db05ef8454e83bfe299ace4b1d, type: 3}
-    maxTotal: 7
-    dropRate: 0.627
+    maxTotal: 15
+    dropRate: 0.785
     maxPerRoom: 1
   - prefab: {fileID: 8235543716416661632, guid: 903767b03075dbe44a0b3be0624b8c23, type: 3}
-    maxTotal: 4
-    dropRate: 0.78
+    maxTotal: 12
+    dropRate: 0.306
     maxPerRoom: 1
   - prefab: {fileID: 1978000190493946783, guid: 501672ccaf9a7d44185b3cea1e8c8fc2, type: 3}
-    maxTotal: 7
-    dropRate: 0.402
+    maxTotal: 15
+    dropRate: 0.703
     maxPerRoom: 1
   - prefab: {fileID: 6470282797850365921, guid: c90192d354e924344b251d17b07560fa, type: 3}
-    maxTotal: 5
-    dropRate: 0.255
+    maxTotal: 20
+    dropRate: 0.357
     maxPerRoom: 2
   - prefab: {fileID: 123435416433458099, guid: 622220209622e8346bf69b28ba67eaf5, type: 3}
-    maxTotal: 6
-    dropRate: 0.678
+    maxTotal: 20
+    dropRate: 0.489
     maxPerRoom: 1
   - prefab: {fileID: 278017144258038667, guid: af9d2cbfaab6e0540a5e15a64f956d60, type: 3}
-    maxTotal: 6
+    maxTotal: 20
     dropRate: 1
+    maxPerRoom: 3
+  - prefab: {fileID: 507327042411836140, guid: 592e86ba50cf9894fbd10a20e0191d44, type: 3}
+    maxTotal: 20
+    dropRate: 0.611
     maxPerRoom: 1
   _enemyPrefab: {fileID: 6093041654589100165, guid: ff62d5060b48876438c2ece09f7c77ad, type: 3}
-  _enemyCount: 1
+  _enemyCount: 40
   _enemyMinDistanceFromPlayer: 6
   _enemyMinSeparation: 1.25
   _enemyMaxSpawnAttemptsPerEnemy: 20
