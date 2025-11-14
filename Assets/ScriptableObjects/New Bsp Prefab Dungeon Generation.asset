@@ -60,9 +60,9 @@ MonoBehaviour:
   _roomRight: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
   _roomTop: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
   _roomBottom: {fileID: 5077061695862243160, guid: 7b6725c5728ad84459059945b06ae106, type: 3}
-  _corridorHorizontal: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  _corridorHorizontal: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
   _corridorVertical: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
   _corridorCornerBR: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
-  _corridorCornerBL: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  _corridorCornerBL: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
   _corridorCornerTR: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
-  _corridorCornerTL: {fileID: 1038101025910533269, guid: 5052a71fdf780bc4b9b27834b4caa3e0, type: 3}
+  _corridorCornerTL: {fileID: 7384268248524734830, guid: 266e892c441dbda4a8c029409fbf18cb, type: 3}
