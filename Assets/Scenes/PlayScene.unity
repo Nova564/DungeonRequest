@@ -1304,6 +1304,12 @@ MonoBehaviour:
   paladinShield: {fileID: 943295070}
   dagger: {fileID: 1582249189}
   hammer: {fileID: 101269838}
+  pickUpKey: 101
+  dropKey: 103
+  pickUpRadius: 2
+  pickUpLayer:
+    serializedVersion: 2
+    m_Bits: 192
   pickedObject: {fileID: 0}
   pickedWeapon: {fileID: 0}
   pickedArmor: {fileID: 0}

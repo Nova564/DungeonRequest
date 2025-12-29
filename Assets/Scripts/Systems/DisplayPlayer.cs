@@ -25,12 +25,12 @@ public class displayPlayer : MonoBehaviour
         if (equipment.currentWeaponStats == null && equipment.currentShieldStats == null)
         {
             statText.text =
-                $"Weapon: nothing\n" +
-                $"Shield: nothing\n" +
+                $"Weapon: No Weapon\n" +
+                $"Shield: No Shield\n" +
                 $"Strong: {defalt.defaultDamage}\n" +
                 $"Knockback: {defalt.knockbackForce}\n" +
-                $"Move Speed Bonus: nothing\n" +
-                $"Attack Rate: nothing";
+                $"Move Speed Bonus: 0\n" +
+                $"Attack Rate: 1";
             return;
         }
 

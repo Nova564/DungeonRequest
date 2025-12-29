@@ -11,6 +11,12 @@ public class PlayerEquipment : MonoBehaviour
     public GameObject dagger;
     public GameObject hammer;
 
+    [Header("Settings")]
+    [SerializeField] private KeyCode pickUpKey = KeyCode.E;
+    [SerializeField] private KeyCode dropKey = KeyCode.G;
+    [SerializeField] private float pickUpRadius = 2f;
+    [SerializeField] private LayerMask pickUpLayer;
+
     [Header("Picked Objects")]
     public GameObject pickedObject;
     public GameObject pickedWeapon;
@@ -20,9 +26,34 @@ public class PlayerEquipment : MonoBehaviour
     public ItemStats currentWeaponStats;
     public ItemStats currentShieldStats;
 
+    private GameObject nearbyItem;
+
     void Awake()
     {
         DisableAll();
+    }
+
+    void Update()
+    {
+        DetectNearbyItem();
+
+        if (Input.GetKeyDown(pickUpKey) && nearbyItem != null)
+        {
+            PickUpObject(nearbyItem);
+            nearbyItem = null;
+        }
+
+        if (Input.GetKeyDown(dropKey))
+        {
+            if (pickedWeapon != null)
+            {
+                DropObject(pickedWeapon);
+            }
+            else if (pickedArmor != null)
+            {
+                DropObject(pickedArmor);
+            }
+        }
     }
 
     private void DisableAll()
@@ -43,13 +74,36 @@ public class PlayerEquipment : MonoBehaviour
         currentWeaponStats = null;
         currentShieldStats = null;
     }
+
+    private void DetectNearbyItem()
+    {
+        // Utilisation de Physics2D pour un jeu 2D
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickUpRadius, pickUpLayer);
+
+        if (hits.Length > 0)
+        {
+            nearbyItem = hits[0].gameObject;
+            Debug.Log($"Objet détecté: {nearbyItem.name} - Layer: {LayerMask.LayerToName(nearbyItem.layer)}");
+        }
+        else
+        {
+            nearbyItem = null;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, pickUpRadius);
+    }
+
     public void DropObject(GameObject objectToDrop)
     {
         if (objectToDrop == null)
             return;
 
         objectToDrop.SetActive(true);
-        objectToDrop.transform.position = transform.position;
+        objectToDrop.transform.position = transform.position + Vector3.right * 1.5f;
 
         if (pickedWeapon != null && objectToDrop == pickedWeapon)
         {
@@ -67,8 +121,7 @@ public class PlayerEquipment : MonoBehaviour
 
     public void PickUpObject(GameObject pickedUpObject)
     {
-        pickedObject = pickedUpObject;
-        pickedObject.SetActive(false);
+        Debug.Log($"Tentative de ramassage: {pickedUpObject.name}");
 
         ItemStats itemStats = null;
         var pickup = pickedUpObject.GetComponent<ItemPickup>();
@@ -77,6 +130,13 @@ public class PlayerEquipment : MonoBehaviour
 
         if (pickedUpObject.layer == LayerMask.NameToLayer("Weapon"))
         {
+            Debug.Log("Arme détectée!");
+            if (pickedWeapon != null)
+                DropObject(pickedWeapon);
+
+            pickedWeapon = pickedUpObject;
+            pickedWeapon.SetActive(false);
+
             DisableWeapons();
 
             switch (pickedUpObject.tag)
@@ -103,6 +163,14 @@ public class PlayerEquipment : MonoBehaviour
         }
         else if (pickedUpObject.layer == LayerMask.NameToLayer("Armor"))
         {
+            Debug.Log("Armure détectée!");
+
+            if (pickedArmor != null)
+                DropObject(pickedArmor);
+
+            pickedArmor = pickedUpObject;
+            pickedArmor.SetActive(false);
+
             DisableArmors();
 
             switch (pickedUpObject.tag)
