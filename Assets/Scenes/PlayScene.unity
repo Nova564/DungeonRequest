@@ -2066,7 +2066,7 @@ GameObject:
   - component: {fileID: 1050160969}
   - component: {fileID: 1050160968}
   - component: {fileID: 1050160971}
-  - component: {fileID: 1050160972}
+  - component: {fileID: 1050160973}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2192,7 +2192,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &1050160972
+--- !u!114 &1050160973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2201,10 +2201,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 1050160967}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeec33284eafdc443ad920d473c3d509, type: 3}
+  m_Script: {fileID: 11500000, guid: 37f06638a2127a14382bed6b17a372ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 640035276}
+  shakeDuration: 1
+  shakeStrength: 15
+  shakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.588834
+      outSlope: 2.588834
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3851282
+      value: 0.997033
+      inSlope: 0.52037907
+      outSlope: 0.52037907
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0291748
+      value: 0
+      inSlope: -1.5480759
+      outSlope: -1.5480759
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  target: {fileID: 1762078778}
+  smoothSpeed: 5
+  offset: {x: 0, y: 0, z: -10}
 --- !u!1 &1171101524
 GameObject:
   m_ObjectHideFlags: 0
@@ -3331,6 +3368,11 @@ MonoBehaviour:
   equipment: {fileID: 640035282}
   defalt: {fileID: 640035283}
   statText: {fileID: 992918094}
+--- !u!4 &1762078778 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3307255458216647811, guid: 8d245bef0f2b8ad43a1187a41939c4e5, type: 3}
+  m_PrefabInstance: {fileID: 1762078774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1821365940
 GameObject:
   m_ObjectHideFlags: 0
