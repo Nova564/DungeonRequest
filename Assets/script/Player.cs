@@ -17,10 +17,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private AudioClip _hitSound;
 
     [Header("Combat")]
-    [SerializeField] private float maxHealth = 10f;
+    [SerializeField] private float maxHealth = 1000f;
     [SerializeField] private float flashDuration = 0.08f;
     [SerializeField] private float healPotionEffect = 3f;
     public bool isDead = false;
+
+    [Header("Shake settings")]
+    [SerializeField] private float onHitShakeDuration = 0.5f;
+    [SerializeField] private float onHitShakeStrength = 10f;
 
     private float currentHealth;
     private SpriteRenderer spriteRenderer;
@@ -132,8 +136,16 @@ public class PlayerMovement : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= Mathf.Max(0f, damage);
+        Camera camera = Camera.main;
+                if (camera != null)
+        {
+            CameraShake cameraShake = camera.GetComponent<CameraShake>();
+            if (cameraShake != null)
+                cameraShake?.TriggerShake(onHitShakeDuration, onHitShakeStrength);
 
-        if (_audioSource != null && _hitSound != null)
+        }
+
+            if (_audioSource != null && _hitSound != null)
         {
             _audioSource.Stop();
             _audioSource.clip = _hitSound;
