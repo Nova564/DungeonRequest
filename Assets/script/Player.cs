@@ -22,6 +22,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float healPotionEffect = 3f;
     public bool isDead = false;
 
+    [Header("On hit shake settings")]
+    [SerializeField] private float onHitShakeDuration = 0.3f;
+    [SerializeField] private float onHitShakeStrength = 10f;
+
     private float currentHealth;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
@@ -132,6 +136,13 @@ public class PlayerMovement : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= Mathf.Max(0f, damage);
+        Camera camera = Camera.main;
+        if (camera == null) return;
+        CameraShake cameraShake = camera.GetComponent<CameraShake>();
+        if (cameraShake != null)
+        {
+            cameraShake?.TriggerShake(onHitShakeDuration, onHitShakeStrength);
+        }
 
         if (_audioSource != null && _hitSound != null)
         {
