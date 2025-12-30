@@ -55,9 +55,8 @@ public class CameraShake : MonoBehaviour
     private IEnumerator ShakeCoroutine()
     {
         if (isShaking)
-            isShaking = false;
-            shakeOffset = Vector3.zero;
-    
+            yield break;
+
         isShaking = true;
         float elapsedTime = 0f;
 
