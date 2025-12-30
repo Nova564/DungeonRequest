@@ -333,12 +333,14 @@ MonoBehaviour:
   _audioSource: {fileID: 3887579101946124504}
   _hitSound: {fileID: 8300000, guid: 7dff5db1b41a62846ab34aa6186ed3cc, type: 3}
   _followSound: {fileID: 8300000, guid: 73f10187d99e547438c71f621ce7a2b2, type: 3}
+  onDeathSound: {fileID: 8300000, guid: 7ed570430fe22a646a792301825938d5, type: 3}
   maxHealth: 50
   knockbackDuration: 0.12
   flashDuration: 0.08
   contactDamage: 4
   attackCooldown: 3
   attackRange: 0.25
+  deathEffectPrefab: {fileID: 7856939199014537196, guid: 212ef1a41838ce044a9ac54994866708, type: 3}
 --- !u!1 &6990012117791905244
 GameObject:
   m_ObjectHideFlags: 0

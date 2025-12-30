@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private AudioClip _hitSound;
 
     [Header("Combat")]
+    [SerializeField] private float baseDamage = 5f;
     [SerializeField] private float maxHealth = 10f;
     [SerializeField] private float flashDuration = 0.08f;
     [SerializeField] private float healPotionEffect = 3f;

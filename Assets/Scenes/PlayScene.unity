@@ -1236,6 +1236,7 @@ MonoBehaviour:
   equipment: {fileID: 0}
   _audioSource: {fileID: 1427771288}
   _hitSound: {fileID: 8300000, guid: 865fdc803cd7299478ce18c5b0976168, type: 3}
+  baseDamage: 5
   maxHealth: 30
   flashDuration: 0.08
   healPotionEffect: 5
@@ -1335,7 +1336,7 @@ MonoBehaviour:
   hittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  defaultDamage: 1
+  defaultDamage: 1000
   knockbackForce: 12
   baseMoveSpeed: 7
   animator: {fileID: 1762078775}

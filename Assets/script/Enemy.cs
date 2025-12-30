@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField] private AudioClip _followSound;
+    [SerializeField] private AudioClip onDeathSound;
 
     [Header("Combat")]
     [SerializeField] private float maxHealth = 20f;
@@ -25,6 +26,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float contactDamage = 4f;
     [SerializeField] private float attackCooldown = 0.75f;
     [SerializeField] private float attackRange = 0.25f;
+
+    [Header("OnDeathEffect")]
+    [SerializeField] private GameObject deathEffectPrefab;
 
     private float currentHealth;
     private bool isKnockedBack = false;
@@ -294,6 +298,14 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         if (rb != null) rb.linearVelocity = Vector2.zero;
+        if (deathEffectPrefab != null)
+        {
+            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+        }
+        if ((onDeathSound != null))
+        {
+            AudioSource.PlayClipAtPoint(onDeathSound, transform.position);
+        }
         Destroy(gameObject);
     }
     private void OnDestroy()
